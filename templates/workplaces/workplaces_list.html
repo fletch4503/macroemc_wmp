@@ -1,0 +1,119 @@
+{% extends "workplaces/base.html" %}
+
+{% block title %}Workplaces List{% endblock %}
+
+{% block content %}
+<div class="flex justify-center mb-4">
+    <h1 class="text-3xl font-bold">MacroGroup</h1>
+</div>
+<div class="text-center mb-6">
+    <h2 class="text-xl">Система управления рабочими местами на производстве</h2>
+</div>
+
+<!-- Форма создания -->
+<div class="card bg-base-100 shadow-xl mb-6">
+    <div class="card-body">
+        <h3 class="card-title">Создать новое рабочее место</h3>
+        <form hx-post="{% url 'workplaces:list' %}" hx-target="#workplaces-table tbody" hx-swap="beforeend" class="form-control">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="label">Name</label>
+                    {{ form.name }}
+                </div>
+                <div>
+                    <label class="label">Description</label>
+                    {{ form.description }}
+                </div>
+                <div>
+                    <label class="label">Type</label>
+                    {{ form.type }}
+                </div>
+                <div>
+                    <label class="label">Department</label>
+                    {{ form.department }}
+                </div>
+                <div id="ip-field" class="hidden">
+                    <label class="label">IP</label>
+                    {{ form.ip }}
+                </div>
+                <div id="mac-field" class="hidden">
+                    <label class="label">MAC</label>
+                    {{ form.mac }}
+                </div>
+            </div>
+            <div class="card-actions justify-end mt-4">
+                <button type="submit" class="btn btn-primary">Создать</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Поиск -->
+<div class="mb-4">
+    <form hx-get="{% url 'workplaces:list' %}" hx-target="#workplaces-table" hx-trigger="keyup changed delay:500ms" class="form-control">
+        <input type="text" name="query" placeholder="Поиск по имени..." class="input input-bordered w-full" value="{{ search_form.query.value }}">
+    </form>
+</div>
+
+<!-- Таблица -->
+<div class="overflow-x-auto">
+    <table class="table w-full" id="workplaces-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Department</th>
+                <th>IP</th>
+                <th>MAC</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for workplace in workplaces %}
+            <tr id="workplace-{{ workplace.pk }}">
+                <td>{{ workplace.name }}</td>
+                <td>{{ workplace.description }}</td>
+                <td>{{ workplace.type }}</td>
+                <td>{{ workplace.department }}</td>
+                <td>{{ workplace.ip }}</td>
+                <td>{{ workplace.mac }}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" data-url="{% url 'workplaces:update' workplace.pk %}" onclick="editWorkplace(this)">Update</button>
+                    <button class="btn btn-sm btn-error" hx-delete="{% url 'workplaces:delete' workplace.pk %}" hx-confirm="Are you sure?" hx-target="#workplace-{{ workplace.pk }}" hx-swap="outerHTML">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Статус задачи -->
+<div id="task-status" hx-get="{% url 'workplaces:task_status' %}" class="mt-4">
+    <p>Статус задачи: Загрузка...</p>
+</div>
+
+<script>
+    // JS для показа/скрытия ip/mac
+    document.getElementById('id_type').addEventListener('change', function() {
+        const type = this.value;
+        const ipField = document.getElementById('ip-field');
+        const macField = document.getElementById('mac-field');
+        if (type === 'server' || type === 'network') {
+            ipField.classList.remove('hidden');
+            macField.classList.remove('hidden');
+        } else {
+            ipField.classList.add('hidden');
+            macField.classList.add('hidden');
+        }
+    });
+
+    // Функция для inline edit
+    function editWorkplace(button) {
+        const row = button.closest('tr');
+        const url = button.dataset.url;
+        htmx.ajax('GET', url, {target: row, swap: 'innerHTML'});
+    }
+</script>
+{% endblock %}

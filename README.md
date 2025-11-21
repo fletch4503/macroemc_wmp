@@ -1,127 +1,113 @@
 # MacroGroup Test Task
 
-Django-приложение для учета рабочих мест на производстве.
+Django-приложение для учета рабочих мест на производстве с использованием современных технологий для создания динамичного веб-интерфейса.
 
-   ```bash
-   git clone https://github.com/fletch4503/macroemc_wmp.git
-   ```
+## Описание проекта
 
-5. Перейдите в директорию проекта:
+Приложение позволяет управлять рабочими местами на производстве. Включает CRUD операции для рабочих мест, поиск, асинхронную обработку задач с помощью Celery и красивый интерфейс на основе DaisyUI.
 
-   ```bash
-   cd macrogroup
-   ```
+## Стек технологий
 
-### Установка виртуального окружения UV
+- **Backend**: Django 5.2, Python 3.12
+- **Frontend**: HTMX, DaisyUI (Tailwind CSS), HTML5
+- **База данных**: PostgreSQL
+- **Асинхронные задачи**: Celery + Redis
+- **Управление зависимостями**: UV
+- **Контейнеризация**: Docker, Docker Compose
+- **Логирование**: Colorlog для цветного вывода
 
-UV - это быстрый менеджер зависимостей для Python. Для установки и настройки виртуального окружения выполните следующие шаги:
+## Установка
 
-1. Установите UV, если он не установлен. Рекомендуется использовать pip:
+### С использованием UV
 
+1. Установите UV:
    ```bash
    pip install uv
    ```
 
-2. Синхронизируйте зависимости проекта. Это создаст виртуальное окружение и установит все необходимые пакеты, указанные 
-   в `pyproject.toml`:
+2. Клонируйте репозиторий:
+   ```bash
+   git clone https://github.com/fletch4503/macroemc_wmp.git
+   cd macrogroup
+   ```
 
+3. Синхронизируйте зависимости:
    ```bash
    uv sync
    ```
 
-   Эта команда создаст директорию `.venv` с виртуальным окружением и установит зависимости, такие как Django, Celery, 
-   psycopg2-binary и другие.
+### С использованием Docker
 
-3. Активируйте виртуальное окружение (опционально, если вы планируете запускать команды вручную):
+Убедитесь, что установлены Docker и Docker Compose.
 
-   - На Windows:
-     ```bash
-     .venv\Scripts\activate
-     ```
-   - На macOS/Linux:
-     ```bash
-     source .venv/bin/activate
-     ```
+## Запуск
 
-### Начальный запуск приложения с использованием Docker-compose
+### С использованием Docker Compose
 
-Для развертывания приложения в изолированной среде используйте Docker Compose. 
-Это рекомендуется для разработки и производства.
-
-1. Установите Docker и Docker Compose, если они не установлены. 
-   Скачайте с официального сайта: https://www.docker.com/products/docker-desktop.
-
-2. В директории проекта запустите сервисы:
-
+1. Запустите сервисы:
    ```bash
-   docker-compose up --build -d
+   docker-compose up --build
    ```
 
-   - `--build`: пересоберет образы, если Dockerfile изменился.
-   - `-d`: запустит сервисы в фоновом режиме.
-
-   Это запустит три сервиса: web (Django-приложение), db (PostgreSQL), redis.
-
-3. При первом запуске создайте и затем примените миграции внутри контейнера:
-
+2. При первом запуске примените миграции:
    ```bash
    docker-compose exec web uv run python manage.py makemigrations
-   ```
-
-   ```bash
    docker-compose exec web uv run python manage.py migrate
    ```
 
-4. Заполните базу данных тестовыми данными:
-
+3. Заполните базу данных тестовыми данными:
    ```bash
-   docker-compose exec web uv run python manage.py create_test_data
+   docker-compose exec web uv run python manage.py populate_db
    ```
 
-5. Откройте браузер и перейдите по адресу: http://localhost:8000
+Приложение будет доступно по адресу: http://localhost:8000
 
-   Приложение будет доступно на порту 8000.
+## Использование
 
-### Локальная установка (альтернатива Docker)
+### Главная страница
+Отображает список всех рабочих мест с возможностью поиска и фильтрации.
 
-Если вы предпочитаете локальную установку без Docker:
+### CRUD операции
+- **Создание**: Нажмите "Добавить рабочее место" для создания нового
+- **Чтение**: Просмотр деталей рабочего места в списке
+- **Обновление**: Нажмите "Редактировать" для изменения данных
+- **Удаление**: Нажмите "Удалить" для удаления рабочего места
 
-1. Установите UV и синхронизируйте зависимости, как описано выше.
+### Поиск
+Используйте поле поиска для фильтрации рабочих мест по названию, IP или MAC адресу.
 
-2. Настройте PostgreSQL и Redis локально:
-   - Установите PostgreSQL (версия 15 или выше).
-   - Создайте базу данных `itschooltt` с пользователем `postgres` и паролем `password`.
-   - Установите Redis.
+### Celery статус
+Мониторинг статуса асинхронных задач через интерфейс Celery.
 
-3. Установите переменные окружения (создайте файл `.env` или установите в системе):
-   - `DEBUG=True`
-   - `DB_HOST=localhost`
-   - `DB_NAME=itschooltt`
-   - `DB_USER=postgres`
-   - `DB_PASS=password`
-   - `REDIS_URL=redis://localhost:6379/0`
-   - `CELERY_BROKER_URL=redis://localhost:6379/0`
-   - `CELERY_RESULT_BACKEND=django-db`
+## Структура проекта
 
-4. Запустите приложение:
-   ```bash
-   uv run python manage.py makemigrations
-   uv run python manage.py migrate
-   uv run python manage.py create_test_data
-   uv run python manage.py runserver
-   uv run celery -A itschooltt worker --loglevel=info
-   ```
+```
+macrogroup/
+├── macroemc_wmp/          # Основное приложение Django
+│   ├── settings.py        # Настройки проекта
+│   ├── urls.py           # URL маршруты
+│   ├── celery.py         # Конфигурация Celery
+│   └── wsgi.py           # WSGI конфигурация
+├── workplaces/           # Приложение для управления рабочими местами
+│   ├── models.py         # Модели данных
+│   ├── views.py          # Представления
+│   ├── forms.py          # Формы
+│   ├── tasks.py          # Асинхронные задачи Celery
+│   ├── urls.py           # URL маршруты приложения
+│   └── management/       # Команды управления
+├── templates/            # Шаблоны HTML
+│   └── workplaces/       # Шаблоны для рабочих мест
+├── static/               # Статические файлы (CSS, JS)
+├── Dockerfile            # Docker образ
+├── docker-compose.yml    # Конфигурация Docker Compose
+├── pyproject.toml        # Зависимости проекта
+└── README.md             # Документация
+```
 
 ## Команды
 
-- `uv run python manage.py create_test_data` - заполнить тестовыми данными
-- `uv run celery -A itschooltt worker --loglevel=info` - запустить Celery worker
-- `uv run python manage.py runserver` - запустить сервер разработки
-- `docker-compose down` - остановить и удалить контейнеры
-- `docker-compose logs` - просмотреть логи сервисов
-- `uv run python manage.py update_lesson_statuses` - обновить текущие статусы уроков (от сегодняшней даты)
-
-Добавляем удаленный репозиторий
-```bash
-git remote add origin https://github.com/fletch4503/macroemc_wmp.git    
-```
+- `uv run python manage.py populate_db` - Заполнить базу тестовыми данными
+- `uv run celery -A macroemc_wmp worker --loglevel=info` - Запустить Celery worker
+- `uv run python manage.py runserver` - Запустить сервер разработки
+- `docker-compose down` - Остановить контейнеры
+- `docker-compose logs` - Просмотреть логи сервисов

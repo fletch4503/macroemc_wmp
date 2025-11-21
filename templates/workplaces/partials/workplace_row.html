@@ -1,0 +1,12 @@
+<tr id="workplace-{{ workplace.pk }}">
+    <td>{{ workplace.name }}</td>
+    <td>{{ workplace.description }}</td>
+    <td>{{ workplace.type }}</td>
+    <td>{{ workplace.department }}</td>
+    <td>{{ workplace.ip }}</td>
+    <td>{{ workplace.mac }}</td>
+    <td>
+        <button class="btn btn-sm btn-warning" onclick="editWorkplace({{ workplace.pk }})">Update</button>
+        <button class="btn btn-sm btn-error" hx-delete="{% url 'workplaces:delete' workplace.pk %}" hx-confirm="Are you sure?" hx-target="#workplace-{{ workplace.pk }}" hx-swap="outerHTML">Delete</button>
+    </td>
+</tr>

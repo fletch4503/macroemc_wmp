@@ -1,0 +1,94 @@
+{% extends "workplaces/base.html" %}
+
+{% block title %}Staff{% endblock %}
+
+{% block content %}
+<div class="flex justify-center mb-4">
+    <h1 class="text-3xl font-bold">MacroGroup</h1>
+</div>
+<div class="text-center mb-6">
+    <h2 class="text-xl">Управление персоналом</h2>
+</div>
+
+<!-- Форма создания -->
+<div class="card bg-base-100 shadow-xl mb-6">
+    <div class="card-body">
+        <h3 class="card-title">Создать нового сотрудника</h3>
+        <form hx-post="{% url 'workplaces:staff_list' %}" hx-target="#staff-table tbody" hx-swap="beforeend" class="form-control">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="label">First Name</label>
+                    {{ form.first_name }}
+                </div>
+                <div>
+                    <label class="label">Last Name</label>
+                    {{ form.last_name }}
+                </div>
+                <div>
+                    <label class="label">Department</label>
+                    {{ form.department }}
+                </div>
+                <div>
+                    <label class="label">Email</label>
+                    {{ form.email }}
+                </div>
+                <div>
+                    <label class="label">Phone</label>
+                    {{ form.phone }}
+                </div>
+            </div>
+            <div class="card-actions justify-end mt-4">
+                <button type="submit" class="btn btn-primary">Создать</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Поиск -->
+<div class="mb-4">
+    <form hx-get="{% url 'workplaces:staff_list' %}" hx-target="#staff-table" hx-trigger="keyup changed delay:500ms" class="form-control">
+        <input type="text" name="query" placeholder="Поиск по имени или фамилии..." class="input input-bordered w-full" value="{{ search_form.query.value }}">
+    </form>
+</div>
+
+<!-- Таблица -->
+<div class="overflow-x-auto">
+    <table class="table w-full" id="staff-table">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Department</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for staff in staffs %}
+            <tr id="staff-{{ staff.pk }}">
+                <td>{{ staff.first_name }}</td>
+                <td>{{ staff.last_name }}</td>
+                <td>{{ staff.department }}</td>
+                <td>{{ staff.email }}</td>
+                <td>{{ staff.phone }}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" data-url="{% url 'workplaces:staff_update' staff.pk %}" onclick="editStaff(this)">Update</button>
+                    <button class="btn btn-sm btn-error" hx-delete="{% url 'workplaces:staff_delete' staff.pk %}" hx-confirm="Are you sure?" hx-target="#staff-{{ staff.pk }}" hx-swap="outerHTML">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Функция для inline edit
+    function editStaff(button) {
+        const row = button.closest('tr');
+        const url = button.dataset.url;
+        htmx.ajax('GET', url, {target: row, swap: 'innerHTML'});
+    }
+</script>
+{% endblock %}

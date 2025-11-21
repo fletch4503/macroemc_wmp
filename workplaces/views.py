@@ -1,0 +1,222 @@
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, UpdateView, DeleteView
+from django.views.generic.edit import FormMixin
+from django.urls import reverse_lazy, reverse
+from django.http import JsonResponse, HttpResponse
+from django.contrib import messages
+from django.template.loader import render_to_string
+from .models import Workplaces, Department, Staff
+from .forms import WorkplacesForm, DepartmentForm, StaffForm, SearchForm
+from .tasks import process_workplace_creation
+from celery.result import AsyncResult
+
+
+class WorkplacesListView(FormMixin, ListView):
+    model = Workplaces
+    template_name = "workplaces/workplaces_list.html"
+    context_object_name = "workplaces"
+    form_class = WorkplacesForm
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get("query")
+        if query:
+            queryset = queryset.filter(name__icontains=query)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = self.get_form()
+        context["search_form"] = SearchForm(self.request.GET)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            workplace = form.save()
+            task = process_workplace_creation.delay(workplace.id)
+            request.session["task_id"] = task.id
+            context = {"workplace": workplace}
+            html = render_to_string("workplaces/partials/workplace_row.html", context)
+            return JsonResponse({"html": html})
+        else:
+            html = render_to_string(
+                "workplaces/partials/workplace_form.html", {"form": form}
+            )
+            return JsonResponse({"html": html}, status=400)
+
+
+class WorkplaceUpdateHTMXView(UpdateView):
+    model = Workplaces
+    form_class = WorkplacesForm
+    template_name = "workplaces/partials/workplace_form.html"
+
+    def form_valid(self, form):
+        form.save()
+        context = {"workplace": self.object}
+        html = render_to_string("workplaces/partials/workplace_row.html", context)
+        return JsonResponse({"html": html})
+
+    def form_invalid(self, form):
+        html = render_to_string(
+            self.template_name, {"form": form, "workplace": self.object}
+        )
+        return JsonResponse({"html": html}, status=400)
+
+
+class WorkplaceDeleteHTMXView(DeleteView):
+    model = Workplaces
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return JsonResponse({"deleted": True})
+
+
+class DepartmentListView(FormMixin, ListView):
+    model = Department
+    template_name = "workplaces/department_list.html"
+    context_object_name = "departments"
+    form_class = DepartmentForm
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get("query")
+        if query:
+            queryset = queryset.filter(name__icontains=query)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = self.get_form()
+        context["search_form"] = SearchForm(self.request.GET)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            department = form.save()
+            context = {"department": department}
+            html = render_to_string("workplaces/partials/department_row.html", context)
+            return JsonResponse({"html": html})
+        else:
+            html = render_to_string(
+                "workplaces/partials/department_form.html", {"form": form}
+            )
+            return JsonResponse({"html": html}, status=400)
+
+
+class DepartmentUpdateHTMXView(UpdateView):
+    model = Department
+    form_class = DepartmentForm
+    template_name = "workplaces/partials/department_form.html"
+
+    def form_valid(self, form):
+        form.save()
+        context = {"department": self.object}
+        html = render_to_string("workplaces/partials/department_row.html", context)
+        return JsonResponse({"html": html})
+
+    def form_invalid(self, form):
+        html = render_to_string(
+            self.template_name, {"form": form, "department": self.object}
+        )
+        return JsonResponse({"html": html}, status=400)
+
+
+class DepartmentDeleteHTMXView(DeleteView):
+    model = Department
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return JsonResponse({"deleted": True})
+
+
+class StaffListView(FormMixin, ListView):
+    model = Staff
+    template_name = "workplaces/staff_list.html"
+    context_object_name = "staffs"
+    form_class = StaffForm
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get("query")
+        if query:
+            queryset = queryset.filter(first_name__icontains=query) | queryset.filter(
+                last_name__icontains=query
+            )
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = self.get_form()
+        context["search_form"] = SearchForm(self.request.GET)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            staff = form.save()
+            context = {"staff": staff}
+            html = render_to_string("workplaces/partials/staff_row.html", context)
+            return JsonResponse({"html": html})
+        else:
+            html = render_to_string(
+                "workplaces/partials/staff_form.html", {"form": form}
+            )
+            return JsonResponse({"html": html}, status=400)
+
+
+class StaffUpdateHTMXView(UpdateView):
+    model = Staff
+    form_class = StaffForm
+    template_name = "workplaces/partials/staff_form.html"
+
+    def form_valid(self, form):
+        form.save()
+        context = {"staff": self.object}
+        html = render_to_string("workplaces/partials/staff_row.html", context)
+        return JsonResponse({"html": html})
+
+    def form_invalid(self, form):
+        html = render_to_string(
+            self.template_name, {"form": form, "staff": self.object}
+        )
+        return JsonResponse({"html": html}, status=400)
+
+
+class StaffDeleteHTMXView(DeleteView):
+    model = Staff
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return JsonResponse({"deleted": True})
+
+
+def task_status(request):
+    task_id = request.session.get("task_id")
+    url = reverse("workplaces:task_status")
+    if task_id:
+        result = AsyncResult(task_id)
+        status = result.status
+        if status == "PENDING":
+            response = "Задача в очереди..."
+            html = f'<div id="task-status" hx-get="{url}" hx-trigger="every 5s"><p>Статус задачи: {response}</p></div>'
+        elif status == "SUCCESS":
+            response = "Задача завершена успешно."
+            html = f'<div id="task-status"><p>Статус задачи: {response}</p></div>'
+        elif status == "FAILURE":
+            response = "Задача завершилась с ошибкой."
+            html = f'<div id="task-status"><p>Статус задачи: {response}</p></div>'
+        else:
+            response = f"Статус: {status}"
+            html = f'<div id="task-status"><p>Статус задачи: {response}</p></div>'
+    else:
+        response = "Нет активной задачи."
+        html = f'<div id="task-status"><p>Статус задачи: {response}</p></div>'
+    return HttpResponse(html)

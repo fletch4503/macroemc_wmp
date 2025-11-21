@@ -1,0 +1,8 @@
+<tr id="department-{{ department.pk }}">
+    <td>{{ department.name }}</td>
+    <td>{{ department.description }}</td>
+    <td>
+        <button class="btn btn-sm btn-warning" onclick="editDepartment({{ department.pk }})">Update</button>
+        <button class="btn btn-sm btn-error" hx-delete="{% url 'workplaces:department_delete' department.pk %}" hx-confirm="Are you sure?" hx-target="#department-{{ department.pk }}" hx-swap="outerHTML">Delete</button>
+    </td>
+</tr>
