@@ -28,19 +28,35 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-
 # Application definition
-
-INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
+PROJECT_APPS = [
     "workplaces",
-    "django_htmx",
+]
+
+EXT_APPS = [
+    "celery",
+    "django_browser_reload",
     "django_celery_results",
+    "django_htmx",
+    "template_partials",
+]
+
+INSTALLED_APPS = (
+    [
+        "django.contrib.admin",
+        "django.contrib.auth",
+        "django.contrib.contenttypes",
+        "django.contrib.sessions",
+        "django.contrib.messages",
+        "django.contrib.staticfiles",
+    ]
+    + PROJECT_APPS
+    + EXT_APPS
+)
+
+EXTRA_MIDDLEWARE = [
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 MIDDLEWARE = [
@@ -51,8 +67,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_htmx.middleware.HtmxMiddleware",
-]
+] + EXTRA_MIDDLEWARE
 
 ROOT_URLCONF = "macroemc_wmp.urls"
 
@@ -111,12 +126,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
+LANGUAGE_CODE = "ru-RU"
+TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -124,6 +136,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = str(BASE_DIR / "staticfiles")
+STATICFILES_DIRS = [
+    str(BASE_DIR / "static_src"),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -133,6 +149,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Celery Configuration
 CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = "django-db"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 # Logging Configuration
 import colorlog
@@ -141,13 +158,18 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "colored": {
+        "verbose": {
+            "format": "[%(asctime)s] %(module)s:%(lineno)d %(funcName)4s %(levelname)-3s %(message)s",
+            "datefmt": "%y-%m-%d %H:%M:%S",
+        },
+        "color_formatter": {
             "()": "colorlog.ColoredFormatter",
-            "format": "%(log_color)s%(levelname)s:%(name)s:%(message)s",
+            "format": "%(log_color)3s %(module)s:%(lineno)d %(levelname)-3s %(funcName)4s %(name)s -> %(message)4s",
+            "datefmt": "%y-%m-%d %H:%M:%S",
             "log_colors": {
                 "DEBUG": "cyan",
-                "INFO": "green",
-                "WARNING": "yellow",
+                "INFO": "fg_green",
+                "WARNING": "purple",
                 "ERROR": "red",
                 "CRITICAL": "red,bg_white",
             },
@@ -155,13 +177,10 @@ LOGGING = {
     },
     "handlers": {
         "console": {
+            "level": "INFO",
             "class": "logging.StreamHandler",
-            "formatter": "colored",
+            "formatter": "color_formatter",
         },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "DEBUG",
     },
     "loggers": {
         "django": {

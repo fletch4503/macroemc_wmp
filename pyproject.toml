@@ -1,16 +1,65 @@
 [project]
 dependencies = [
+  "black>=24.0,<25.11",
+  "celery[redis]>=5.5.3",
+  "celery-types==0.23.0",
+  "colorlog>=6.8.2",
+  "crispy-tailwind>=0.5.0",
   "django>=5.2.8",
-  "psycopg2-binary>=2.9.9",
-  "celery>=5.4.0",
-  "redis>=5.0.8",
+  "django-browser-reload>=1.21.0",
   "django-htmx>=1.18.0",
   "django-celery-results>=2.6.0",
-  "colorlog>=6.8.2",
   "django-crispy-forms>=2.3",
-  "crispy-tailwind>=0.5.0",
+  "django-template-partials>=25.3",
+  "psycopg2-binary>=2.9.9",
+  "redis>=5.0.8",
+  "ruff>=0.14.2",
+
 ]
 description = "Fullstack application for workplace management"
 name = "macrogroup"
 requires-python = ">=3.13"
 version = "0.1.0"
+
+[project.optional-dependencies]
+dev = [
+  "black>=24.0,<25.11",
+  "ruff>=0.14.2",
+]
+
+[tool.ruff]
+# Исключить стандартные директории
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".git-references",
+  ".hg",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
+]
+indent-width = 4
+# line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+ignore = ["F401", "E501"] # Отключает проверку неиспользуемых импортов и длинных строк
+select = ["E", "F"]
+
+[tool.black]
+# line-length = 88
+target-version = ['py313']

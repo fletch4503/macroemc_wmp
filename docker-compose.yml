@@ -14,42 +14,49 @@ services:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: uv run python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
+      - /app/.venv
     ports:
       - "8000:8000"
     depends_on:
       - db
       - redis
     environment:
-      - DJANGO_SETTINGS_MODULE=macroemc_wmp.settings
-      - DB_NAME=macrogroup
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_HOST=db
-      - DB_PORT=5432
-      - REDIS_URL=redis://redis:6379/0
+      DJANGO_SETTINGS_MODULE: macroemc_wmp.settings
+      DB_NAME: macrogroup
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_HOST: db
+      DB_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
 
   celery:
     build: .
-    command: celery -A macroemc_wmp worker --loglevel=info
+    command: celery -A macroemc_wmp.celery worker -E --loglevel=info
     volumes:
       - .:/app
+      - /app/.venv
     depends_on:
       - db
       - redis
     environment:
-      - DJANGO_SETTINGS_MODULE=macroemc_wmp.settings
-      - DB_NAME=macrogroup
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_HOST=db
-      - DB_PORT=5432
-      - REDIS_URL=redis://redis:6379/0
+      DJANGO_SETTINGS_MODULE: macroemc_wmp.settings
+      DB_NAME: macrogroup
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_HOST: db
+      DB_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: django-db
 
 volumes:
   postgres_data:
+  redis_data:
