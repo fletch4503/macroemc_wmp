@@ -1,0 +1,27 @@
+{#<div class="navbar bg-base-100 shadow-lg">#}
+{% load static %}
+<div class="navbar fixed flex w-full top-0 z-50 bg-base-100 shadow-lg">
+    <div class="navbar-start">
+        <a href="/" class="btn btn-ghost normal-case text-xl">
+            <img src="{% static 'img/macro.png' %}" alt="Домой" class="w-14 h-14 mr-1"/>
+{#            <img src="{% static 'img/logo.svg' %}" alt="Домой" class="w-14 h-14 mr-1"/>#}
+{#            МакроГрупп#}
+        </a>
+    </div>
+    <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+            <li><a href="/">Workplaces</a></li>
+            <li><a href="/department/">Department</a></li>
+            <li><a href="/staff/">Staff</a></li>
+        </ul>
+    </div>
+    <div class="navbar-end">
+        <!-- Переключение темной/светлой темы -->
+        <label class="swap swap-rotate">
+              <input type="checkbox" id="theme-toggle" />
+              <i class="swap-on fa fa-sun fill-current w-6 h-6" style="font-size: 24px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"></i>
+              <!-- Иконка для темной темы (луна) -->
+              <i class="swap-off fa fa-moon fill-current w-6 h-6" style="font-size: 24px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"></i>
+        </label>
+    </div>
+</div>

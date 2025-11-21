@@ -1,5 +1,7 @@
+{% load static %}
+{% load partials %}
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="ru" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,46 +13,19 @@
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@2.0.1"></script>
     <script src="https://unpkg.com/htmx.org@2.0.1/dist/ext/ws.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <!-- Favicon -->
+    <link href="{% static 'img/macro.png' %}" type="image/x-icon" rel="shortcut icon"/>
 </head>
 <body class="bg-base-200">
     <!-- Navbar -->
-    <div class="navbar bg-base-100 shadow-lg">
-        <div class="navbar-start">
-            <a href="/" class="btn btn-ghost normal-case text-xl">MacroGroup</a>
-        </div>
-        <div class="navbar-center hidden lg:flex">
-            <ul class="menu menu-horizontal px-1">
-                <li><a href="/">Workplaces</a></li>
-                <li><a href="/department/">Department</a></li>
-                <li><a href="/staff/">Staff</a></li>
-            </ul>
-        </div>
-        <div class="navbar-end">
-            <label class="swap swap-rotate">
-                <input type="checkbox" id="theme-toggle" />
-                <svg class="swap-on fill-current w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
-                <svg class="swap-off fill-current w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21,18H15a1,1,0,0,1,0-2h5a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V15A1,1,0,0,1,21,18ZM12,6a1,1,0,0,0-2,0V8a1,1,0,0,0,2,0ZM6,12a1,1,0,0,0-2,0v2a1,1,0,0,0,2,0ZM6,6a1,1,0,0,0-2,0V8a1,1,0,0,0,2,0ZM18,12a1,1,0,0,0-2,0v2a1,1,0,0,0,2,0ZM12,16a1,1,0,0,0-2,0v2a1,1,0,0,0,2,0ZM2,8a1,1,0,0,0,1,1H5a1,1,0,0,0,0-2H3A1,1,0,0,0,2,8ZM21,12a1,1,0,0,0-1-1H17a1,1,0,0,0,0,2h3A1,1,0,0,0,21,12Z"/></svg>
-            </label>
-        </div>
-    </div>
-    <div class="container mx-auto p-4">
+    {% include 'workplaces/partials/navpanel.html' %}
+    <div class="container mx-auto p-2">
         {% block content %}{% endblock %}
     </div>
-    <script>
-        const themeToggle = document.getElementById('theme-toggle');
-        const html = document.documentElement;
-
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        html.setAttribute('data-theme', savedTheme);
-        themeToggle.checked = savedTheme === 'dark';
-
-        // Toggle theme
-        themeToggle.addEventListener('change', () => {
-            const newTheme = themeToggle.checked ? 'dark' : 'light';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        });
-    </script>
+    <script src="{% static 'js/base.js' %}"></script>
 </body>
 </html>
