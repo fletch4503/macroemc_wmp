@@ -1,8 +1,16 @@
-<tr id="department-{{ department.pk }}">
-    <td>{{ department.name }}</td>
-    <td>{{ department.description }}</td>
+{#<tr id="department-{{ department.pk }}">#}
+{#    <td>{{ department.name }}</td>#}
+{#    <td>{{ department.description }}</td>#}
+{#    <td>#}
+{#        <button class="btn btn-sm btn-warning" onclick="editDepartment({{ department.pk }})">Update</button>#}
+{#        <button class="btn btn-sm btn-error" hx-delete="{% url 'workplaces:department_delete' department.pk %}" hx-confirm="Are you sure?" hx-target="#department-{{ department.pk }}" hx-swap="outerHTML">Delete</button>#}
+{#    </td>#}
+{#</tr>#}
+<tr id="department-{{ dpt.pk }}">
+    <td>{{ dpt.name }}</td>
+    <td>{{ dpt.description }}</td>
     <td>
-        <button class="btn btn-sm btn-warning" onclick="editDepartment({{ department.pk }})">Update</button>
-        <button class="btn btn-sm btn-error" hx-delete="{% url 'workplaces:department_delete' department.pk %}" hx-confirm="Are you sure?" hx-target="#department-{{ department.pk }}" hx-swap="outerHTML">Delete</button>
+        <button class="btn btn-sm btn-warning" data-url="{% url 'workplaces:department_update' dpt.pk %}" onclick="editDepartment(this)">Update</button>
+        <button class="btn btn-sm btn-error" hx-delete="{% url 'workplaces:department_delete' dpt.pk %}" hx-confirm="Are you sure?" hx-target="#department-{{ dpt.pk }}" hx-swap="outerHTML">Delete</button>
     </td>
 </tr>

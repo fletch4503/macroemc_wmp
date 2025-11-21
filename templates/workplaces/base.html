@@ -13,6 +13,7 @@
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@2.0.1"></script>
     <script src="https://unpkg.com/htmx.org@2.0.1/dist/ext/ws.js"></script>
+    <meta name="htmx-config" content='{"includeIndicatorStyles": true}'>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom CSS -->
@@ -20,9 +21,11 @@
     <!-- Favicon -->
     <link href="{% static 'img/macro.png' %}" type="image/x-icon" rel="shortcut icon"/>
 </head>
-<body class="bg-base-200">
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+      class="bg-base-200">
     <!-- Navbar -->
     {% include 'workplaces/partials/navpanel.html' %}
+    <!-- Main Content -->
     <div class="container mx-auto p-2">
         {% block content %}{% endblock %}
     </div>

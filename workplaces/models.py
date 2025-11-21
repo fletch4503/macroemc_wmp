@@ -28,10 +28,8 @@ class Staff(models.Model):
 
 class Workplaces(models.Model):
     TYPE_CHOICES = [
-        ("desktop", "Desktop"),
-        ("laptop", "Laptop"),
-        ("server", "Server"),
-        ("network", "Network Device"),
+        ("nopcplace", "Место без компьютера"),
+        ("pcplace", "Место с компьютером"),
     ]
     name = models.CharField(max_length=100)
     description = models.TextField()

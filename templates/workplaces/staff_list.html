@@ -6,44 +6,12 @@
 <div class="flex justify-center mb-4">
     <h1 class="text-3xl font-bold">MacroGroup</h1>
 </div>
-<div class="text-center mb-6">
-    <h2 class="text-xl">Управление персоналом</h2>
+<div class="text-center mb-2 pt-2">
+    <h2 class="text-xl">Сотрудники</h2>
 </div>
 
 <!-- Форма создания -->
-<div class="card bg-base-100 shadow-xl mb-6">
-    <div class="card-body">
-        <h3 class="card-title">Создать нового сотрудника</h3>
-        <form hx-post="{% url 'workplaces:staff_list' %}" hx-target="#staff-table tbody" hx-swap="beforeend" class="form-control">
-            {% csrf_token %}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="label">First Name</label>
-                    {{ form.first_name }}
-                </div>
-                <div>
-                    <label class="label">Last Name</label>
-                    {{ form.last_name }}
-                </div>
-                <div>
-                    <label class="label">Department</label>
-                    {{ form.department }}
-                </div>
-                <div>
-                    <label class="label">Email</label>
-                    {{ form.email }}
-                </div>
-                <div>
-                    <label class="label">Phone</label>
-                    {{ form.phone }}
-                </div>
-            </div>
-            <div class="card-actions justify-end mt-4">
-                <button type="submit" class="btn btn-primary">Создать</button>
-            </div>
-        </form>
-    </div>
-</div>
+{% include 'workplaces/partials/staff_form.html' %}
 
 <!-- Поиск -->
 <div class="mb-4">

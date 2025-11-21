@@ -95,13 +95,20 @@ button:hover {
 
 table {
   width: 100%;
+  border-color: inherit;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: 10px;
+}
+
+.table :where(th, td) {
+padding-inline: calc(0.25rem * 4);
+padding-block: calc(0.25rem * 3);
+vertical-align: middle;
 }
 
 table th {
   background-color: #f0f0f0;
-  padding: 12px;
+  padding: 15px;
   text-align: left;
   border-bottom: 2px solid #ddd;
   font-weight: bold;
@@ -109,12 +116,13 @@ table th {
 }
 
 table td {
-  padding: 12px;
+  padding: 5px;
   border-bottom: 1px solid #ddd;
 }
 
 table tr:hover {
-  background-color: #f9f9f9;
+  background-color: #6A7282FF;
+  /*background-color: #f9f9f9;*/
 }
 
 .lesson-row {
@@ -246,3 +254,45 @@ table tr:hover {
     border-left: 3px solid #d32f2f;
     margin-bottom: 5px;
 }
+.btn-main {
+    background: linear-gradient(to right, #808080, #ffffff);
+    transition: background 0.5s ease;
+}
+
+.btn-main:hover {
+    color: #ffffaa !important;
+    background: linear-gradient(to right, #0d3544, #33FFFF); /* blue-600 → blue-700 */
+}
+.btn-wrkplc {
+    color: #000000 !important;
+    background: linear-gradient(to right, #3b82f6, #2563eb);
+    transition: background 0.5s ease;
+}
+
+.btn-wrkplc:hover {
+    color: #ffffaa !important;
+    background: linear-gradient(to right, #2563eb, #1e40af); /* blue-600 → blue-700 */
+}
+
+.btn-dpt {
+    color: #000000 !important;
+    background: linear-gradient(to right, #22c55e, #16a34a);
+    transition: background 0.5s ease;
+}
+
+.btn-dpt:hover {
+    color: #ffffaa !important;
+    background: linear-gradient(to right, #16a34a, #14532d); /* green-600 → green-700 */
+}
+
+.btn-staff {
+    color: #000000 !important;
+    background: linear-gradient(to right, #a855f7, #9333ea);
+    transition: background 0.5s ease;
+}
+
+.btn-staff:hover {
+    color: #ffffaa !important;
+    background: linear-gradient(to right, #9333ea, #7e22ce); /* purple-600 → purple-700 */
+}
+

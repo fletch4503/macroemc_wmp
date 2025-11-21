@@ -1,6 +1,43 @@
-<div class="alert alert-error">
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <span>{{ form.errors }}</span>
+{#<div class="alert alert-error">#}
+{#    <div>#}
+{#        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>#}
+{#        <span>{{ form.errors }}</span>#}
+{#    </div>#}
+{#</div>#}
+<div class="card bg-base-100 shadow-xl mb-6">
+    <div class="card-body">
+        <h3 class="card-title">Создать новое рабочее место</h3>
+        <form hx-post="{% url 'workplaces:list' %}" hx-target="#workplaces-table tbody" hx-swap="beforeend" class="form-control">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="label">Name</label>
+                    {{ form.name }}
+                </div>
+                <div>
+                    <label class="label">Description</label>
+                    {{ form.description }}
+                </div>
+                <div>
+                    <label class="label">Type</label>
+                    {{ form.type }}
+                </div>
+                <div>
+                    <label class="label">Department</label>
+                    {{ form.department }}
+                </div>
+                <div id="ip-field" class="hidden">
+                    <label class="label">IP</label>
+                    {{ form.ip }}
+                </div>
+                <div id="mac-field" class="hidden">
+                    <label class="label">MAC</label>
+                    {{ form.mac }}
+                </div>
+            </div>
+            <div class="card-actions justify-end mt-4">
+                <button type="submit" class="btn btn-primary">Создать</button>
+            </div>
+        </form>
     </div>
 </div>
