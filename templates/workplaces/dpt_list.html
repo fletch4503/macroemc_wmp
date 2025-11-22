@@ -22,7 +22,7 @@
         <tbody class="text-sm text-medium" id="dpt-tbody">
             {% partialdef dpt-tbody inline %}
                 {% for dpt in departments %}
-                    {% include "workplaces/partials/department_row.html" %}
+                    {% include "workplaces/partials/dpt_row.html" %}
                 {% empty %}
                     <tr><td colspan="6" class="text-center">Нет доступных отделов'</td></tr>
                 {% endfor %}

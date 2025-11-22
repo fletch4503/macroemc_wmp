@@ -9,7 +9,7 @@
 </div>
 
 <!-- Форма создания -->
-{% include 'workplaces/partials/workplace_form.html' %}
+{% include 'workplaces/partials/wp_form.html' %}
 <!-- Статус задачи -->
 <div id="task-status" hx-get="{% url 'workplaces:task_status' %}" class="mt-4">
     <p>Статус задачи: Загрузка...</p>
@@ -45,8 +45,11 @@
                 <td>{{ workplace.ip }}</td>
                 <td>{{ workplace.mac }}</td>
                 <td>
-                    <button class="btn btn-xs btn-warning" data-url="{% url 'workplaces:update' workplace.pk %}" onclick="editWorkplace(this)">Update</button>
-                    <button class="btn btn-xs btn-error" hx-delete="{% url 'workplaces:delete' workplace.pk %}" hx-confirm="Are you sure?" hx-target="#workplace-{{ workplace.pk }}" hx-swap="outerHTML">Delete</button>
+                    <button class="btn btn-xs btn-warning" data-url="{% url 'workplaces:update' workplace.pk %}"
+                            onclick="editWorkplace(this)">Update</button>
+                    <button class="btn btn-xs btn-error" hx-delete="{% url 'workplaces:delete' workplace.pk %}"
+                            hx-confirm="Are you sure?" hx-target="#workplace-{{ workplace.pk }}"
+                            hx-swap="outerHTML">Delete</button>
                 </td>
             </tr>
             {% endfor %}

@@ -13,7 +13,7 @@ from celery.result import AsyncResult
 
 class WorkplacesListView(FormMixin, ListView):
     model = Workplaces
-    template_name = "workplaces/workplaces_list.html"
+    template_name = "workplaces/wp_list.html"
     context_object_name = "workplaces"
     form_class = WorkplacesForm
     paginate_by = 10
@@ -38,11 +38,11 @@ class WorkplacesListView(FormMixin, ListView):
             task = process_workplace_creation.delay(workplace.id)
             request.session["task_id"] = task.id
             context = {"workplace": workplace}
-            html = render_to_string("workplaces/partials/workplace_row.html", context)
+            html = render_to_string("workplaces/partials/wp_row.html", context)
             return JsonResponse({"html": html})
         else:
             html = render_to_string(
-                "workplaces/partials/workplace_form.html", {"form": form}
+                "workplaces/partials/wp_form.html", {"form": form}
             )
             return JsonResponse({"html": html}, status=400)
 
@@ -50,12 +50,12 @@ class WorkplacesListView(FormMixin, ListView):
 class WorkplaceUpdateHTMXView(UpdateView):
     model = Workplaces
     form_class = WorkplacesForm
-    template_name = "workplaces/partials/workplace_form.html"
+    template_name = "workplaces/partials/wp_form.html"
 
     def form_valid(self, form):
         form.save()
         context = {"workplace": self.object}
-        html = render_to_string("workplaces/partials/workplace_row.html", context)
+        html = render_to_string("workplaces/partials/wp_row.html", context)
         return JsonResponse({"html": html})
 
     def form_invalid(self, form):
@@ -76,7 +76,7 @@ class WorkplaceDeleteHTMXView(DeleteView):
 
 class DepartmentListView(FormMixin, ListView):
     model = Department
-    template_name = "workplaces/department_list.html"
+    template_name = "workplaces/dpt_list.html"
     context_object_name = "departments"
     form_class = DepartmentForm
     ordering = ["-id"]
@@ -100,7 +100,7 @@ class DepartmentListView(FormMixin, ListView):
         if form.is_valid():
             department = form.save()
             context = {"department": department}
-            html = render_to_string("workplaces/partials/department_row.html", context)
+            html = render_to_string("workplaces/partials/dpt_row.html", context)
             return JsonResponse({"html": html})
         else:
             html = render_to_string(
