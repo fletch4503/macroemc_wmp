@@ -1,0 +1,27 @@
+{% extends "workplaces/base.html" %}
+{% block title %}Workplaces List{% endblock %}
+{% block content %}
+<div class="flex justify-center mb-4">
+    <h1 class="text-3xl font-bold">MacroGroup</h1>
+</div>
+<div class="text-center mb-2 pt-2">
+    <h2 class="text-xl">Система управления рабочими местами на производстве</h2>
+</div>
+
+<!-- Форма создания -->
+{% include 'workplaces/partials/wp_form.html' %}
+<!-- Статус задачи -->
+<div id="task-status" class="hidden" hx-get="{% url 'workplaces:task_status' %}" class="mt-2">
+    <p>Статус задачи: Загрузка...</p>
+</div>
+<!-- Поиск -->
+{#<div class="mb-2">#}
+{% include 'workplaces/partials/wp_search.html' %}
+{#    <form hx-get="{% url 'workplaces:list' %}" hx-target="#workplaces-table" hx-trigger="keyup changed delay:500ms" class="form-control">#}
+{#        <input type="text" name="query" placeholder="Поиск по имени..." class="input input-bordered w-full" value="{{ search_form.query.value }}">#}
+{#    </form>#}
+{#</div>#}
+
+{% include 'workplaces/wp_list.html' %}
+
+{% endblock %}

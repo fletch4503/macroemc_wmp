@@ -5,17 +5,23 @@ from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
 from django.template.loader import render_to_string
+
+import workplaces
 from .models import Workplaces, Department, Staff
 from .forms import WorkplacesForm, DepartmentForm, StaffForm, SearchForm
 from .tasks import process_workplace_creation
 from celery.result import AsyncResult
+from macroemc_wmp.utils import log
+from django.db.models import Q
+import time
 
 
 class WorkplacesListView(FormMixin, ListView):
     model = Workplaces
-    template_name = "workplaces/wp_list.html"
+    template_name = "workplaces/index.html"
     context_object_name = "workplaces"
     form_class = WorkplacesForm
+    ordering = ["-id"]
     paginate_by = 10
 
     def get_queryset(self):
@@ -73,6 +79,25 @@ class WorkplaceDeleteHTMXView(DeleteView):
         self.object.delete()
         return JsonResponse({"deleted": True})
 
+
+class WorkplaceSearchHTMXView(ListView):
+    model = Workplaces
+    template_name = "workplaces/wp_list.html"
+
+    def get(self, request, *args, **kwargs):
+        time.sleep(1)
+        # qs = super().get_queryset()
+        query=request.GET.get("search", default='')
+        log.warning("Ищем строку: %s",query)
+        wp = Workplaces.objects.filter(
+            Q(name__icontains=query)
+            | Q(description__icontains=query)
+            | Q(department__name__icontains=query)
+            | Q(department__staff__last_name__icontains=query)
+        )
+        return render(
+            request, "workplaces/wp_list.html",{"workplaces": wp}
+        )
 
 class DepartmentListView(FormMixin, ListView):
     model = Department

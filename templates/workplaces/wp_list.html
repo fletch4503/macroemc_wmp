@@ -1,60 +1,32 @@
-{% extends "workplaces/base.html" %}
-{% block title %}Workplaces List{% endblock %}
-{% block content %}
-<div class="flex justify-center mb-4">
-    <h1 class="text-3xl font-bold">MacroGroup</h1>
-</div>
-<div class="text-center mb-2 pt-2">
-    <h2 class="text-xl">Система управления рабочими местами на производстве</h2>
-</div>
-
-<!-- Форма создания -->
-{% include 'workplaces/partials/wp_form.html' %}
-<!-- Статус задачи -->
-<div id="task-status" hx-get="{% url 'workplaces:task_status' %}" class="mt-4">
-    <p>Статус задачи: Загрузка...</p>
-</div>
-<!-- Поиск -->
-<div class="mb-4">
-    <form hx-get="{% url 'workplaces:list' %}" hx-target="#workplaces-table" hx-trigger="keyup changed delay:500ms" class="form-control">
-        <input type="text" name="query" placeholder="Поиск по имени..." class="input input-bordered w-full" value="{{ search_form.query.value }}">
-    </form>
-</div>
-
+{% load partials %}
 <!-- Таблица -->
-<div class="overflow-x-auto">
+<div class="overflow-x-auto" id="wp-list">
+{% partialdef wp-list inline %}
     <table class="table w-full" id="workplaces-table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Type</th>
-                <th>Department</th>
+                <th>Наименование</th>
+                <th>Описание</th>
+                <th>Тип</th>
+                <th>Отдел</th>
                 <th>IP</th>
                 <th>MAC</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for workplace in workplaces %}
-            <tr id="workplace-{{ workplace.pk }}">
-                <td>{{ workplace.name }}</td>
-                <td>{{ workplace.description }}</td>
-                <td>{{ workplace.type }}</td>
-                <td>{{ workplace.department }}</td>
-                <td>{{ workplace.ip }}</td>
-                <td>{{ workplace.mac }}</td>
-                <td>
-                    <button class="btn btn-xs btn-warning" data-url="{% url 'workplaces:update' workplace.pk %}"
-                            onclick="editWorkplace(this)">Update</button>
-                    <button class="btn btn-xs btn-error" hx-delete="{% url 'workplaces:delete' workplace.pk %}"
-                            hx-confirm="Are you sure?" hx-target="#workplace-{{ workplace.pk }}"
-                            hx-swap="outerHTML">Delete</button>
-                </td>
-            </tr>
+            {% partialdef wp-tbody inline %}
+                {% for wp in workplaces %}
+                    {% include "workplaces/partials/wp_row.html" %}
+                {% empty %}
+                    <tr><td colspan="6" class="text-center">Нет доступных элементов</td></tr>
+                {% endfor %}
+            {% endpartialdef wp-tbody %}
+            {% for wp in workplaces %}
             {% endfor %}
         </tbody>
     </table>
+{% endpartialdef wp-list %}
 </div>
 <script>
     // JS для показа/скрытия ip/mac
@@ -78,4 +50,3 @@
         htmx.ajax('GET', url, {target: row, swap: 'innerHTML'});
     }
 </script>
-{% endblock %}
