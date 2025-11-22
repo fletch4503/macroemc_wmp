@@ -10,10 +10,12 @@
                 data-url="{% url 'workplaces:update' wp.pk %}"
                 onclick="editWorkplace(this)">Update</button>
         <button class="badge badge-error badge-sm hover:bg-indigo-500 mx-1"
-{#                    <button class="btn btn-xs btn-error items-center"#}
                 hx-delete="{% url 'workplaces:delete' wp.pk %}"
+                hx-indicator="#spinner"
                 hx-confirm="Вы уверены, что хотите удалить данные по этому рабочему месту?"
-                hx-target="#workplace-{{ wp.pk }}"
-                hx-swap="outerHTML">Удалить</button>
+                hx-on:wp-deleted="this.closest('tr').remove();"
+{#                hx-target="#workplace-{{ wp.pk }}"#}
+{#                hx-swap="outerHTML"#}
+        >Удалить</button>
     </td>
 </tr>
