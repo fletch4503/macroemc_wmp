@@ -76,8 +76,14 @@ class WorkplaceDeleteHTMXView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        self.object.delete()
-        return JsonResponse({"deleted": True})
+        wp = get_object_or_404(Workplaces, pk=self.kwargs["pk"])
+        log.warning("Soft-удаление элемента %s", wp.name)
+        wp.archived = True
+        wp.save()
+        response = HttpResponse(status=204)
+        response["HX-Trigger"] = "wp-deleted"
+        # self.object.delete()
+        return response
 
 
 class WorkplaceSearchHTMXView(ListView):
