@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin
-from django.urls import reverse_lazy, reverse
+from django.urls import (
+    # reverse_lazy,
+    reverse,
+)
 from django.http import JsonResponse, HttpResponse
-from django.contrib import messages
 from django.template.loader import render_to_string
-
-import workplaces
 from .models import Workplaces, Department, Staff
 from .forms import WorkplacesForm, DepartmentForm, StaffForm, SearchForm
 from .tasks import process_workplace_creation
@@ -14,6 +14,8 @@ from celery.result import AsyncResult
 from macroemc_wmp.utils import log
 from django.db.models import Q
 import time
+# import workplaces
+# from django.contrib import messages
 
 
 class WorkplacesListView(FormMixin, ListView):
