@@ -285,6 +285,11 @@ table tr:hover {
     background: linear-gradient(to right, #16a34a, #14532d); /* green-600 → green-700 */
 }
 
+.dpt-hover:hover {
+    color: #ffffaa !important;
+    background: linear-gradient(to right, #16a34a, #14532d); /* green-600 → green-700 */
+}
+
 .btn-staff {
     color: #000000 !important;
     background: linear-gradient(to right, #a855f7, #9333ea);

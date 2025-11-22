@@ -31,15 +31,18 @@ class Workplaces(models.Model):
         ("nopcplace", "Место без компьютера"),
         ("pcplace", "Место с компьютером"),
     ]
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    type = models.CharField(max_length=50, choices=TYPE_CHOICES)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, verbose_name="Название Рабочего Места:")
+    description = models.TextField(verbose_name="Описание Рабочего Места:")
+    type = models.CharField(max_length=50, choices=TYPE_CHOICES, verbose_name="Тип Рабочего Места:")
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, verbose_name="Тип Рабочего Места:")
+    # ip = models.GenericIPAddressField(protocol='both', unpack_ipv4=False,
+    #                                   blank=True, null=True, verbose_name="IP адрес", default='127.0.0.1')
     ip = models.CharField(max_length=15, blank=True)
     mac = models.CharField(max_length=17, blank=True)
+
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["-id"]

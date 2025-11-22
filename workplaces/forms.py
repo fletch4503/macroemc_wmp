@@ -5,7 +5,30 @@ from .models import Workplaces, Department, Staff
 class WorkplacesForm(forms.ModelForm):
     class Meta:
         model = Workplaces
-        fields = ["name", "description", "type", "department", "ip", "mac"]
+        fields = '__all__'
+        widgets = {
+            "name": forms.TextInput(
+                attrs={"class": "form-control-wide","style": "width: 500px;"}
+            ),
+            "description": forms.Textarea(
+                attrs={"class": "form-control-wide",
+                    "rows": "2",
+                    "cols": "30",
+                    "style": "width: 500px;",
+                }
+            ),
+            "type": forms.Select(attrs={"class": "form-control-wide", "style": "width: 500px;"}),
+            "department": forms.Select(attrs={"class": "form-control-wide", "style": "width: 500px;"}),
+            "ip": forms.TextInput(attrs={"class": "form-control-wide", "style": "width: 500px;",
+                                         'placeholder': '192.168.001.001',
+                                         # "maxlength": 15,  # IPv4 max length
+                                        'pattern': r'^(\d{1,3}\.){3}\d{1,3}$',  # простая проверка паттерна (не строгая)
+                                        }),
+            "mac": forms.TextInput(attrs={"class": "form-control-wide", "style": "width: 500px;",
+                                          "placeholder": "AA:BB:CC:DD:EE:FF",
+                                        "maxlength": 17,
+                                        "pattern": r"^([0-9A-Fa-f]{2}[:\-]){5}([0-9A-Fa-f]{2})$"}),
+        }
 
 
 class DepartmentForm(forms.ModelForm):

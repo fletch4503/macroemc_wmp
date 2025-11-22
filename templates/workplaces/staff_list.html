@@ -1,23 +1,13 @@
 {% extends "workplaces/base.html" %}
-
+{% load partials %}
 {% block title %}Staff{% endblock %}
 
 {% block content %}
 <div class="flex justify-center mb-4">
-    <h1 class="text-3xl font-bold">MacroGroup</h1>
+    <h1 class="text-3xl font-bold">Сотрудники</h1>
 </div>
 <div class="text-center mb-2 pt-2">
     <h2 class="text-xl">Сотрудники</h2>
-</div>
-
-<!-- Форма создания -->
-{% include 'workplaces/partials/staff_form.html' %}
-
-<!-- Поиск -->
-<div class="mb-4">
-    <form hx-get="{% url 'workplaces:staff_list' %}" hx-target="#staff-table" hx-trigger="keyup changed delay:500ms" class="form-control">
-        <input type="text" name="query" placeholder="Поиск по имени или фамилии..." class="input input-bordered w-full" value="{{ search_form.query.value }}">
-    </form>
 </div>
 
 <!-- Таблица -->
@@ -25,38 +15,22 @@
     <table class="table w-full" id="staff-table">
         <thead>
             <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Department</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Отдел</th>
                 <th>Email</th>
-                <th>Phone</th>
-                <th>Actions</th>
+                <th>Внутренний Номер</th>
             </tr>
         </thead>
         <tbody>
-            {% for staff in staffs %}
-            <tr id="staff-{{ staff.pk }}">
-                <td>{{ staff.first_name }}</td>
-                <td>{{ staff.last_name }}</td>
-                <td>{{ staff.department }}</td>
-                <td>{{ staff.email }}</td>
-                <td>{{ staff.phone }}</td>
-                <td>
-                    <button class="btn btn-sm btn-warning" data-url="{% url 'workplaces:staff_update' staff.pk %}" onclick="editStaff(this)">Update</button>
-                    <button class="btn btn-sm btn-error" hx-delete="{% url 'workplaces:staff_delete' staff.pk %}" hx-confirm="Are you sure?" hx-target="#staff-{{ staff.pk }}" hx-swap="outerHTML">Delete</button>
-                </td>
-            </tr>
-            {% endfor %}
+            {% partialdef staff-tbody inline %}
+                {% for staff in staffs %}
+                    {% include "workplaces/partials/staff_row.html" %}
+                {% empty %}
+                    <tr><td colspan="6" class="text-center">Нет доступных отделов'</td></tr>
+                {% endfor %}
+            {% endpartialdef staff-tbody %}
         </tbody>
     </table>
 </div>
-
-<script>
-    // Функция для inline edit
-    function editStaff(button) {
-        const row = button.closest('tr');
-        const url = button.dataset.url;
-        htmx.ajax('GET', url, {target: row, swap: 'innerHTML'});
-    }
-</script>
 {% endblock %}

@@ -109,33 +109,6 @@ class DepartmentListView(FormMixin, ListView):
             return JsonResponse({"html": html}, status=400)
 
 
-class DepartmentUpdateHTMXView(UpdateView):
-    model = Department
-    form_class = DepartmentForm
-    template_name = "workplaces/partials/department_form.html"
-
-    def form_valid(self, form):
-        form.save()
-        context = {"department": self.object}
-        html = render_to_string("workplaces/partials/department_row.html", context)
-        return JsonResponse({"html": html})
-
-    def form_invalid(self, form):
-        html = render_to_string(
-            self.template_name, {"form": form, "department": self.object}
-        )
-        return JsonResponse({"html": html}, status=400)
-
-
-class DepartmentDeleteHTMXView(DeleteView):
-    model = Department
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.delete()
-        return JsonResponse({"deleted": True})
-
-
 class StaffListView(FormMixin, ListView):
     model = Staff
     template_name = "workplaces/staff_list.html"
@@ -170,33 +143,6 @@ class StaffListView(FormMixin, ListView):
                 "workplaces/partials/staff_form.html", {"form": form}
             )
             return JsonResponse({"html": html}, status=400)
-
-
-class StaffUpdateHTMXView(UpdateView):
-    model = Staff
-    form_class = StaffForm
-    template_name = "workplaces/partials/staff_form.html"
-
-    def form_valid(self, form):
-        form.save()
-        context = {"staff": self.object}
-        html = render_to_string("workplaces/partials/staff_row.html", context)
-        return JsonResponse({"html": html})
-
-    def form_invalid(self, form):
-        html = render_to_string(
-            self.template_name, {"form": form, "staff": self.object}
-        )
-        return JsonResponse({"html": html}, status=400)
-
-
-class StaffDeleteHTMXView(DeleteView):
-    model = Staff
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.delete()
-        return JsonResponse({"deleted": True})
 
 
 def task_status(request):

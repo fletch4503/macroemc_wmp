@@ -4,24 +4,10 @@
 
 {% block content %}
 <div class="flex justify-center mb-4">
-    <h1 class="text-3xl font-bold">MacroGroup</h1>
+    <h1 class="text-3xl font-bold">Отделы производства</h1>
 </div>
 <div class="text-center mb-2 pt-2">
     <h2 class="text-xl">Отделы производства</h2>
-</div>
-
-<!-- Форма создания -->
-{% include 'workplaces/partials/department_form.html' %}
-
-<!-- Поиск -->
-<div class="mb-4">
-    <form hx-get="{% url 'workplaces:department_list' %}"
-          hx-target="#departments-table"
-          hx-trigger="keyup changed delay:500ms"
-          class="form-control">
-        <input type="text" name="query" placeholder="Поиск по имени..."
-               class="input input-bordered w-full" value="{{ search_form.query.value }}">
-    </form>
 </div>
 
 <!-- Таблица -->
@@ -29,9 +15,8 @@
     <table class="table w-full" id="departments-table">
         <thead>
             <tr>
-                <th scope="col" class="px-1 py-1">Name</th>
-                <th scope="col" class="px-1 py-1">Description</th>
-                <th scope="col" class="px-1 py-1">Actions</th>
+                <th>Название Отдела</th>
+                <th>Описание Отдела</th>
             </tr>
         </thead>
         <tbody class="text-sm text-medium" id="dpt-tbody">
@@ -45,13 +30,4 @@
         </tbody>
     </table>
 </div>
-
-<script>
-    // Функция для inline edit
-    function editDepartment(button) {
-        const row = button.closest('tr');
-        const url = button.dataset.url;
-        htmx.ajax('GET', url, {target: row, swap: 'innerHTML'});
-    }
-</script>
 {% endblock %}

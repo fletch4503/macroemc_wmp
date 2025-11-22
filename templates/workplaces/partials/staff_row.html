@@ -4,8 +4,4 @@
     <td>{{ staff.department }}</td>
     <td>{{ staff.email }}</td>
     <td>{{ staff.phone }}</td>
-    <td>
-        <button class="btn btn-sm btn-warning" onclick="editStaff({{ staff.pk }})">Update</button>
-        <button class="btn btn-sm btn-error" hx-delete="{% url 'workplaces:staff_delete' staff.pk %}" hx-confirm="Are you sure?" hx-target="#staff-{{ staff.pk }}" hx-swap="outerHTML">Delete</button>
-    </td>
 </tr>

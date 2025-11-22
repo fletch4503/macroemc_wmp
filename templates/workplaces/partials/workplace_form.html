@@ -9,22 +9,22 @@
         <h3 class="card-title">Создать новое рабочее место</h3>
         <form hx-post="{% url 'workplaces:list' %}" hx-target="#workplaces-table tbody" hx-swap="beforeend" class="form-control">
             {% csrf_token %}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-1">
                 <div>
-                    <label class="label">Name</label>
+                    <label class="label">Название Рабочего Места:</label>
                     {{ form.name }}
                 </div>
                 <div>
-                    <label class="label">Description</label>
-                    {{ form.description }}
+                    <label class="label">Отдел</label>
+                    {{ form.department }}
                 </div>
                 <div>
-                    <label class="label">Type</label>
+                    <label class="label">Тип Рабочего Места:</label>
                     {{ form.type }}
                 </div>
                 <div>
-                    <label class="label">Department</label>
-                    {{ form.department }}
+                    <label class="label">Описание Рабочего Места:</label>
+                    {{ form.description }}
                 </div>
                 <div id="ip-field" class="hidden">
                     <label class="label">IP</label>
