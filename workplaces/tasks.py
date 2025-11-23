@@ -18,7 +18,7 @@ def create_wp_task(workplace_id: int = None):
         for stemail in staff_emails:
             # Эмулируем отправку
             log.warning("Отправили письмо с оповещением на email: %s", stemail)
-            time.sleep(1)
+            time.sleep(3)
 
     return {
         "status": "SUCCESS",

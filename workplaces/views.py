@@ -275,7 +275,8 @@ class WorkplaceCreateHTMXView(CreateView):
 
     def form_valid(self, form):
         self.request.session.pop("task_id", None)  # Сбрасываем задачу
-        response = super().form_valid(form)
+        # Вызов суперкласса сохраняет объект и устанавливает self.object
+        super().form_valid(form)
         context = self.get_context_data(form=form)
         wp = self.object
         wp_id = self.object.id
@@ -287,9 +288,10 @@ class WorkplaceCreateHTMXView(CreateView):
         except Exception as e:
             log.error("Не получили результата из Celery c ошибкой: %s", e)
         res = AsyncResult(task.id, app=current_app)
+        # Сохраняем только сериализуемые данные в сессии (id),
+        # чтобы не пытаться сериализовать модель Workplaces напрямую.
         self.request.session["task_id"] = task.id
         self.request.session["wp_id"] = wp_id
-        self.request.session["wp"] = wp
         self.request.session["status"] = res.state
         self.request.session["task_result"] = 1
         context = {
@@ -300,12 +302,7 @@ class WorkplaceCreateHTMXView(CreateView):
             # "HX-Trigger": "create_run",
         }
         log.warning("Передаем в форму контекст %s", context)
-        response = render(
-            self.request,
-            self.template_name,
-            context,
-        )
-        # response["HX-Trigger"] = "create_run"
+        # Нечего рендерить в тело ответа — статус будет отображаться через task_status.
         log.info("Выходим из FormValid")
         return HttpResponseClientRefresh()
 
@@ -321,7 +318,8 @@ def task_status(request: HtmxHttpRequest, task_id) -> HttpResponse:
     task_id = request.GET.get("task_id") or task_id
     wp_id = request.session.get("wp_id")
     extstatus = request.session.get("status")
-    template_name = "worplaces/partials/task_status.html#task-status-info"
+    # корректный путь к шаблону (опечатка 'worplaces' -> 'workplaces')
+    template_name = "workplaces/partials/task_status.html"
     # url = reverse("workplaces:task_status")
     res = AsyncResult(task_id, app=current_app)
     if request.htmx:
