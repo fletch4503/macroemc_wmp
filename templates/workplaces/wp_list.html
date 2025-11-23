@@ -47,12 +47,12 @@
     function editWorkplace(button) {
         const row = button.closest('tr');
         const url = button.dataset.url;
-        htmx.ajax('GET', url, {target: #wp_form, swap: 'innerHTML'});
+        htmx.ajax('GET', url, {target: '#wp_form', swap: 'innerHTML'});
     }
 
     document.body.addEventListener('replace-row', function(event) {
     const detail = event.detail;
-    const rowElement = document.getElementById('wp-' + detail.pk);
+    const rowElement = document.getElementById('workplace-' + detail.pk);
     if (rowElement) {
         rowElement.outerHTML = detail.html;
     }

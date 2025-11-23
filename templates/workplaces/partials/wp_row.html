@@ -7,9 +7,9 @@
     <td>{{ wp.mac }}</td>
     <td>
         <button class="badge badge-warning badge-sm hover:bg-indigo-500 mx-1"
-                hx-get="{% url 'workplaces:update' wp.pk %}"
-                hx-target="#wp-form"
-                hx-swap="innerHTML"
+            hx-get="{% url 'workplaces:update' wp.pk %}"
+            hx-target="#wp_form"
+            hx-swap="innerHTML"
 {#                data-url="{% url 'workplaces:update' wp.pk %}"#}
 {#                onclick="editWorkplace(this)"#}
         >Update</button>
