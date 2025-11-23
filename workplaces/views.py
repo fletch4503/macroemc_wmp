@@ -311,17 +311,16 @@ class WorkplaceCreateHTMXView(CreateView):
 @require_GET
 def task_status(request: HtmxHttpRequest, task_id) -> HttpResponse:
     """
-    Отображаем статус отправки уведомлений сотрудникам отдела после создания рабочего места
+    Отображаем статусf отправки уведомлений сотрудникам отдела после создания рабочего места
     """
     global count_status
     count_status += 1
     task_id = request.GET.get("task_id") or task_id
     wp_id = request.session.get("wp_id")
     extstatus = request.session.get("status")
-    # корректный путь к шаблону (опечатка 'worplaces' -> 'workplaces')
     template_name = "workplaces/partials/task_status.html"
-    # url = reverse("workplaces:task_status")
     res = AsyncResult(task_id, app=current_app)
+    time.sleep(2)
     if request.htmx:
         log.warning(
             "Итерация %s, task_id: %s, Ext_Status: %s, Task Status: %s",
