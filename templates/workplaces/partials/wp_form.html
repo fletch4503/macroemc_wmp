@@ -11,8 +11,11 @@
             <h3 class="card-title text-bold">Создать новое рабочее место</h3>
             <form class="form-control"
                   hx-post="{% url 'workplaces:list' %}"
-                  hx-target="#workplaces-table tbody"
-                  hx-swap="beforeend">
+                  hx-indicator="#spinner"
+                    {#                  hx-target="#workplaces-table tbody"#}
+                    {#                  hx-swap="beforeend"#}
+                  hx-swap="innerHTML"
+            >
         {% endif %}
         {% csrf_token %}
         <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-1">

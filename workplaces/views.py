@@ -81,11 +81,19 @@ class WorkplacesListView(FormMixin, ListView):
             context = {
                 "task_id": task.id,
                 "wp": workplace,
+                "status": "Отправляем уведомления",
                 "HX-Trigger": "create_run",
             }
             log.warning("Передаем в форму контекст %s", context)
-            html = render_to_string("workplaces/partials/wp_row.html", context)
-            return JsonResponse({"html": html})
+            response = render(
+                request,
+                self.template_name,
+                context,
+            )
+            log.info("Выходим из FormValid")
+            return HttpResponseClientRefresh()
+            # html = render_to_string("workplaces/partials/wp_row.html", context)
+            # return JsonResponse({"html": html})
         else:
             html = render_to_string(
                 "workplaces/partials/wp_form.html", {"form": form}, request=request
