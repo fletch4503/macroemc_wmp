@@ -1,11 +1,22 @@
 from celery import shared_task
-import logging
+from .models import Workplaces, Staff
+from macroemc_wmp.utils import log
+import time
 
-logger = logging.getLogger(__name__)
 
+@shared_task(name="Create_wp_task")
+def create_wp_task(workplace_id: int = None):
+    wp = Workplaces.objects.get(id=workplace_id)
+    # Получаем список сотрудников данного отдела для рассылки
+    staff_emails = Staff.objects.filter(department=wp.department)
+    if staff_emails:
+        log.info("Получили в задачу создания рабочего места: %s список для рассылки: %s", workplace_id, staff_emails)
+        for stemail in staff_emails:
+            # Эмулируем отправку
+            log.warning("Отправили письмо с оповещением на email: %s", stemail)
+            time.sleep(3)
 
-@shared_task
-def process_workplace_creation(workplace_id):
-    # Пример задачи: логирование создания workplace
-    logger.info(f"Processing creation of workplace with ID: {workplace_id}")
-    # Здесь можно добавить логику, например, отправка email, обновление кэша и т.д.
+    return {
+        "status": "SUCCESS",
+        "state": "Уведомления отправлены",
+    }

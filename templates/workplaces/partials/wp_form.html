@@ -1,10 +1,10 @@
 <div class="card bg-base-100 shadow-xl mb-2" id="wp_form">
     <div class="card-body p-3 text-sm">
         {% if is_update %}
-        <h3 class="card-title text-bold">Обновить рабочее место</h3>
+            <h3 class="card-title text-bold">Обновить рабочее место</h3>
             <form class="form-control"
                   hx-post="{% url 'workplaces:update' wp.pk %}"
-{#                  hx-target="#workplace-{{ wp.pk }}"#}
+                    {#                  hx-target="#workplace-{{ wp.pk }}"#}
                   hx-target="#wp_form"
                   hx-swap="outerHTML">
         {% else %}
@@ -14,40 +14,40 @@
                   hx-target="#workplaces-table tbody"
                   hx-swap="beforeend">
         {% endif %}
-            {% csrf_token %}
-            <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-1">
-                <div>
-                    <label class="label">Название Рабочего Места:</label>
-                    {{ form.name }}
-                </div>
-                <div>
-                    <label class="label">Отдел</label>
-                    {{ form.department }}
-                </div>
-                <div>
-                    <label class="label">Тип Рабочего Места:</label>
-                    {{ form.type }}
-                </div>
-                <div>
-                    <label class="label">Описание Рабочего Места:</label>
-                    {{ form.description }}
-                </div>
-                <div id="ip-field" class="{% if not is_update or wp.type != 'pcplace' %}hidden{% endif %}">
-                    <label class="label">IP</label>
-                    {{ form.ip }}
-                </div>
-                <div id="mac-field" class="{% if not is_update or wp.type != 'pcplace' %}hidden{% endif %}">
-                    <label class="label">MAC</label>
-                    {{ form.mac }}
-                </div>
+        {% csrf_token %}
+        <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-1">
+            <div>
+                <label class="label">Название Рабочего Места:</label>
+                {{ form.name }}
             </div>
-            <div class="card-actions justify-start mt-2">
-                {% if is_update %}
-                    <button type="submit" class="btn btn-primary btn-sm">Обновить</button>
-                {% else %}
-                    <button type="submit" class="btn btn-primary btn-sm">Создать</button>
-                {% endif %}
+            <div>
+                <label class="label">Отдел</label>
+                {{ form.department }}
             </div>
+            <div>
+                <label class="label">Тип Рабочего Места:</label>
+                {{ form.type }}
+            </div>
+            <div>
+                <label class="label">Описание Рабочего Места:</label>
+                {{ form.description }}
+            </div>
+            <div id="ip-field" class="{% if not is_update or wp.type != 'pcplace' %}hidden{% endif %}">
+                <label class="label">IP</label>
+                {{ form.ip }}
+            </div>
+            <div id="mac-field" class="{% if not is_update or wp.type != 'pcplace' %}hidden{% endif %}">
+                <label class="label">MAC</label>
+                {{ form.mac }}
+            </div>
+        </div>
+        <div class="card-actions justify-start mt-2">
+            {% if is_update %}
+                <button type="submit" class="btn btn-primary btn-sm">Обновить</button>
+            {% else %}
+                <button type="submit" class="btn btn-primary btn-sm">Создать</button>
+            {% endif %}
+        </div>
         </form>
     </div>
 </div>

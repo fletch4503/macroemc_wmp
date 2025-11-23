@@ -5,19 +5,42 @@ from django.urls import (
     # reverse_lazy,
     reverse,
 )
-from django.http import JsonResponse, HttpResponse
+from django_htmx.middleware import HtmxDetails
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpRequest,
+)
+from django.views.decorators.http import require_GET
 from django.template.loader import render_to_string
 from .models import Workplaces, Department, Staff
 from .forms import WorkplacesForm, DepartmentForm, StaffForm, SearchForm
-from .tasks import process_workplace_creation
+from .tasks import create_wp_task
 from celery.result import AsyncResult
+from macroemc_wmp.celery import app as celery_app
 from macroemc_wmp.utils import log
 from django.db.models import Q
 import time
 import json
 
-# import workplaces
-# from django.contrib import messages
+count_status = 0
+
+
+def counter(func):
+    global count_status
+    count_status = 0
+
+    def wrapper(*args, **kwargs):
+        wrapper.count_status += 1  # Увеличиваем счётчик при каждом вызове функции
+        log.info(f"Функция {func.__name__} была вызвана {wrapper.count_status} раз(а)")
+        return func(*args, **kwargs)
+
+    wrapper.count_status = 0  # Инициализируем счётчик
+    return wrapper
+
+
+class HtmxHttpRequest(HttpRequest):
+    htmx: HtmxDetails
 
 
 class WorkplacesListView(FormMixin, ListView):
@@ -45,9 +68,21 @@ class WorkplacesListView(FormMixin, ListView):
         form = self.get_form()
         if form.is_valid():
             workplace = form.save()
-            task = process_workplace_creation.delay(workplace.id)
+            try:
+                task = create_wp_task.delay(workplace.id)
+            except Exception as e:
+                log.error("Не получили результата из Celery c ошибкой: %s", e)
+            res = AsyncResult(task, app=celery_app)
             request.session["task_id"] = task.id
-            context = {"workplace": workplace}
+            request.session["wp_id"] = workplace.id
+            request.session["status"] = res.state
+            request.session["task_result"] = 1
+            context = {
+                "task_id": task.id,
+                "wp": workplace,
+                "HX-Trigger": "create_run",
+            }
+            log.warning("Передаем в форму контекст %s", context)
             html = render_to_string("workplaces/partials/wp_row.html", context)
             return JsonResponse({"html": html})
         else:
@@ -203,25 +238,56 @@ class StaffListView(FormMixin, ListView):
             return JsonResponse({"html": html}, status=400)
 
 
-def task_status(request):
-    task_id = request.session.get("task_id")
-    url = reverse("workplaces:task_status")
-    if task_id:
-        result = AsyncResult(task_id)
-        status = result.status
-        if status == "PENDING":
-            response = "Задача в очереди..."
-            html = f'<div id="task-status" hx-get="{url}" hx-trigger="every 5s"><p>Статус задачи: {response}</p></div>'
-        elif status == "SUCCESS":
-            response = "Задача завершена успешно."
-            html = f'<div id="task-status"><p>Статус задачи: {response}</p></div>'
-        elif status == "FAILURE":
-            response = "Задача завершилась с ошибкой."
-            html = f'<div id="task-status"><p>Статус задачи: {response}</p></div>'
-        else:
-            response = f"Статус: {status}"
-            html = f'<div id="task-status"><p>Статус задачи: {response}</p></div>'
+@counter
+@require_GET
+def task_status(request: HtmxHttpRequest, task_id) -> HttpResponse:
+    """
+    Отображаем статус отправки уведомлений сотрудникам отдела после создания рабочего места
+    """
+    global count_status
+    count_status += 1
+    task_id = request.GET.get("task_id") or task_id
+    wp_id = request.session.get("wp_id")
+    extstatus = request.session.get("status")
+    template_name = "worplaces/partials/task_status.html#task-status-info"
+    # url = reverse("workplaces:task_status")
+    res = AsyncResult(task_id, app=current_app)
+    if request.htmx:
+        log.warning(
+            "Итерация %s, task_id: %s, Ext_Status: %s, Task Status: %s",
+            count_status,
+            task_id,
+            extstatus,
+            res.state,
+        )
+    context = {
+        "task_id": task_id,
+        "wp_id": wp_id,
+        "task_result": count_status,
+        "status": "Отправляем уведомления",
+    }
+    response = render(request, template_name=template_name, context=context)
+    if res.state == "SUCCESS":
+        count_status = 0
+        context["status"] = "SUCCESS"
+        response = render(request, template_name=template_name, context=context)
+        response["HX-Trigger"] = "success"
+        # Очищаем task_id и lesson_id из сессии когда задача завершена
+        request.session.pop("task_id", None)
+        request.session.pop("wp_id", None)
+        log.warning("Текущий статус: %s и контекст: %s", res.state, context)
+        return HttpResponseClientRefresh()
+    elif res.state == "FAILURE":
+        count_status = 0
+        context["status"] = "FAILURE"
+        response = render(request, template_name=template_name, context=context)
+        response["HX-Trigger"] = "failure"
+        # Очищаем task_id и wp_id из сессии при ошибке
+        request.session.pop("task_id", None)
+        request.session.pop("wp", None)
+        log.warning("Текущий статус: %s и контекст: %s", res.state, context)
+        return HttpResponseClientRefresh()
     else:
-        response = "Нет активной задачи."
-        html = f'<div id="task-status"><p>Статус задачи: {response}</p></div>'
-    return HttpResponse(html)
+        response = render(request, template_name=template_name, context=context)
+        log.warning("Отправляем в форму контекст %s", context)
+        return response

@@ -8,7 +8,8 @@ urlpatterns = [
     path("<int:pk>/update/", views.WorkplaceUpdateHTMXView.as_view(), name="update"),
     path("<int:pk>/delete/", views.WorkplaceDeleteHTMXView.as_view(), name="delete"),
     path("workplace-search", views.WorkplaceSearchHTMXView.as_view(), name="search"),
-    path("task-status/", views.task_status, name="task_status"),
+    path("task-status/<str:task_id>/", views.task_status, name="task_status"),
+    # Отслеживаем статус задачи отправки уведомлений
     path("department/", views.DepartmentListView.as_view(), name="department_list"),
     path("staff/", views.StaffListView.as_view(), name="staff_list"),
 ]

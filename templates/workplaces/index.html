@@ -1,21 +1,21 @@
 {% extends "workplaces/base.html" %}
 {% block title %}Workplaces List{% endblock %}
 {% block content %}
-<div class="flex justify-center mb-4">
-    <h1 class="text-3xl font-bold">MacroGroup</h1>
-</div>
-<div class="text-center mb-2 pt-2">
-    <h2 class="text-xl">Система управления рабочими местами на производстве</h2>
-</div>
+    <div class="flex justify-center mb-4">
+        <h1 class="text-3xl font-bold">MacroGroup</h1>
+    </div>
+    <div class="text-center mb-2 pt-2">
+        <h2 class="text-xl">Система управления рабочими местами на производстве</h2>
+    </div>
 
-<!-- Форма создания -->
-{% include 'workplaces/partials/wp_form.html' %}
-<!-- Статус задачи -->
-<div id="task-status" class="hidden" hx-get="{% url 'workplaces:task_status' %}" class="mt-2">
-    <p>Статус задачи: Загрузка...</p>
-</div>
-<!-- Поиск -->
-{% include 'workplaces/partials/wp_search.html' %}
-{% include 'workplaces/wp_list.html' %}
+    <!-- Форма создания -->
+    {% include 'workplaces/partials/wp_form.html' %}
+    <!-- Статус задачи -->
+    <div id="task-status" class="hidden mt-2">
+        {% if task_id %}{% include 'workplaces/partials/task_status.html' %}{% endif %}
+    </div>
+    <!-- Поиск -->
+    {% include 'workplaces/partials/wp_search.html' %}
+    {% include 'workplaces/wp_list.html' %}
 
 {% endblock %}
