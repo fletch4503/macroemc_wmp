@@ -15,13 +15,7 @@
     <p>Статус задачи: Загрузка...</p>
 </div>
 <!-- Поиск -->
-{#<div class="mb-2">#}
 {% include 'workplaces/partials/wp_search.html' %}
-{#    <form hx-get="{% url 'workplaces:list' %}" hx-target="#workplaces-table" hx-trigger="keyup changed delay:500ms" class="form-control">#}
-{#        <input type="text" name="query" placeholder="Поиск по имени..." class="input input-bordered w-full" value="{{ search_form.query.value }}">#}
-{#    </form>#}
-{#</div>#}
-
 {% include 'workplaces/wp_list.html' %}
 
 {% endblock %}

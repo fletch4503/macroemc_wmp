@@ -60,18 +60,32 @@ class WorkplaceUpdateHTMXView(UpdateView):
     form_class = WorkplacesForm
     template_name = "workplaces/partials/wp_form.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True
+        context['wp'] = self.object
+        return context
+
     def form_valid(self, form):
         form.save()
-        context = {"workplace": self.object}
-        html = render_to_string("workplaces/partials/wp_row.html", context)
-        return JsonResponse({"html": html})
+        context = {"wp": self.object}
+        row_html = render_to_string("workplaces/partials/wp_row.html", context)
+        # return JsonResponse({"html": html})
+        # HTML формы в режиме создания
+        form_context = {"form": WorkplacesForm(), "is_update": False}
+        form_html = render_to_string(self.template_name, form_context)
+        response = HttpResponse(form_html)
+        # Триггер для замены строки
+        response["HX-Trigger"] = json.dumps({"replace-row": {"pk": self.object.pk, "html": row_html}})
+        return response
+
 
     def form_invalid(self, form):
         html = render_to_string(
-            self.template_name, {"form": form, "workplace": self.object}
+            self.template_name, {"form": form, "wp": self.object, "is_update": True}
         )
-        return JsonResponse({"html": html}, status=400)
-
+        # return JsonResponse({"html": html}, status=400)
+        return HttpResponse(html, status=400)
 
 class WorkplaceDeleteHTMXView(DeleteView):
     model = Workplaces
