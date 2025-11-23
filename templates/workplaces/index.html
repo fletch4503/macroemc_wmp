@@ -7,12 +7,14 @@
     <div class="text-center mb-2 pt-2">
         <h2 class="text-xl">Система управления рабочими местами на производстве</h2>
     </div>
+    <div class="form-section shadow-md">
+        <!-- Форма создания -->
+        {% include 'workplaces/partials/wp_form.html' %}
+    </div>
     <!-- Статус задачи -->
-    <div class="hidden mt-2 shadow-md">
+    <div class="hidden mt-2">
         {% if task_id %}{% include 'workplaces/partials/task_status.html' %}{% endif %}
     </div>
-    <!-- Форма создания -->
-    {% include 'workplaces/partials/wp_form.html' %}
     <!-- Поиск -->
     {% include 'workplaces/partials/wp_search.html' %}
     {% include 'workplaces/wp_list.html' %}

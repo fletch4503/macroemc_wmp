@@ -1,8 +1,8 @@
 body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-  background-color: #555;
-  /*background-color: #f5f5f5;*/
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #555;
+    /*background-color: #f5f5f5;*/
 }
 
 /*h1 {*/
@@ -19,162 +19,162 @@ body {
 /*  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);*/
 /*}*/
 
-#task-status {
-  background-color: #e3f2fd;
-  border-left: 4px solid #2196f3;
-  padding: 5px;
-  margin-bottom: 10px;
-  border-radius: 3px;
+#task-status-info {
+    background-color: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 3px;
 }
 
 .form-section {
-  margin-bottom: 30px;
-  /*background-color: #f9f9f9;*/
-  background-color: #555;
-  /*background-color: #f9f9f9;*/
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
+    margin-bottom: 30px;
+    /*background-color: #f9f9f9;*/
+    background-color: #555;
+    /*background-color: #f9f9f9;*/
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
 }
 
 .form-section h2 {
-  margin-top: 0;
-  color: #333;
+    margin-top: 0;
+    color: #333;
 }
 
 form {
-  /*display: flex;*/
-  /*flex-wrap: wrap;*/
-  gap: 5px;
-  align-items: flex-center;
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
+    gap: 5px;
+    align-items: flex-center;
 }
 
 form > div {
-  flex: 1;
-  min-width: 100px;
+    flex: 1;
+    min-width: 100px;
 }
 
 label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #555;
-  font-size: 12px;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+    font-size: 12px;
 }
 
 input[type="text"],
 input[type="datetime-local"],
 textarea,
 select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  box-sizing: border-box;
-  font-size: 14px;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    box-sizing: border-box;
+    font-size: 14px;
 }
 
 textarea {
-  resize: vertical;
-  min-height: 50px;
+    resize: vertical;
+    min-height: 50px;
 }
 
 button {
-  background-color: #007bff;
-  color: white;
-  padding: 8px 20px;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 14px;
+    background-color: #007bff;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
 }
 
 button:hover {
-  background-color: #0056b3;
+    background-color: #0056b3;
 }
 
 table {
-  width: 100%;
-  border-color: inherit;
-  border-collapse: collapse;
-  margin-top: 10px;
+    width: 100%;
+    border-color: inherit;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 
 .table :where(th, td) {
-padding-inline: calc(0.25rem * 4);
-padding-block: calc(0.25rem * 3);
-vertical-align: middle;
+    padding-inline: calc(0.25rem * 4);
+    padding-block: calc(0.25rem * 3);
+    vertical-align: middle;
 }
 
 table th {
-  background-color: #f0f0f0;
-  padding: 15px;
-  text-align: left;
-  border-bottom: 2px solid #ddd;
-  font-weight: bold;
-  color: #333;
+    background-color: #f0f0f0;
+    padding: 15px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+    font-weight: bold;
+    color: #333;
 }
 
 table td {
-  padding: 5px;
-  border-bottom: 1px solid #ddd;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
 }
 
 table tr:hover {
-  background-color: #6A7282FF;
-  /*background-color: #f9f9f9;*/
+    background-color: #6A7282FF;
+    /*background-color: #f9f9f9;*/
 }
 
 .lesson-row {
-  transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
 .lesson-row.htmx-request {
-  opacity: 0.6;
+    opacity: 0.6;
 }
 
 .status-pending {
-  background-color: #fff3cd;
-  color: #856404;
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-size: 12px;
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
 }
 
 .status-created {
-  background-color: #cfe2ff;
-  color: #084298;
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-size: 12px;
+    background-color: #cfe2ff;
+    color: #084298;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
 }
 
 .status-completed {
-  background-color: #d1e7dd;
-  color: #0f5132;
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-size: 12px;
+    background-color: #d1e7dd;
+    color: #0f5132;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
 }
 
 .actions {
-  display: flex;
-  gap: 5px;
+    display: flex;
+    gap: 5px;
 }
 
 .btn-complete {
-  background-color: #28a745;
-  padding: 5px 10px;
-  font-size: 12px;
+    background-color: #28a745;
+    padding: 5px 10px;
+    font-size: 12px;
 }
 
 .btn-complete:hover {
-  background-color: #218838;
+    background-color: #218838;
 }
 
 .btn-complete:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 .body {
@@ -217,10 +217,12 @@ table tr:hover {
     box-sizing: border-box;
     font-size: 14px;
 }
+
 .textarea {
     resize: vertical;
     min-height: 100px;
 }
+
 .input[type="submit"],
 .button {
     background-color: #007bff;
@@ -231,29 +233,35 @@ table tr:hover {
     cursor: pointer;
     font-size: 16px;
 }
+
 .input[type="submit"]:hover,
 .button:hover {
     background-color: #0056b3;
 }
+
 .a {
     color: #007bff;
     text-decoration: none;
 }
+
 .a:hover {
     text-decoration: underline;
 }
+
 .errorlist {
     color: #d32f2f;
     list-style: none;
     padding: 0;
     margin-bottom: 10px;
 }
+
 .errorlist li {
     padding: 5px;
     background-color: #ffebee;
     border-left: 3px solid #d32f2f;
     margin-bottom: 5px;
 }
+
 .btn-main {
     background: linear-gradient(to right, #808080, #ffffff);
     transition: background 0.5s ease;
@@ -263,6 +271,7 @@ table tr:hover {
     color: #ffffaa !important;
     background: linear-gradient(to right, #0d3544, #33FFFF); /* blue-600 → blue-700 */
 }
+
 .btn-wrkplc {
     color: #000000 !important;
     background: linear-gradient(to right, #3b82f6, #2563eb);

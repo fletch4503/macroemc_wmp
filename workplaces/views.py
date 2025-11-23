@@ -5,6 +5,7 @@ from django.urls import (
     # reverse_lazy,
     reverse,
 )
+from django_htmx.http import HttpResponseClientRefresh
 from django_htmx.middleware import HtmxDetails
 from django.http import (
     JsonResponse,

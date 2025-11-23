@@ -188,5 +188,15 @@ LOGGING = {
             "level": "INFO",
             "propagate": False,
         },
+        "workplaces": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "macroemc_wmp": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }

@@ -5,7 +5,7 @@
          {% elif status == "FAILURE" %}hx-trigger="failure" hx-get="none"
          {% else %}
          hx-get="{% url 'workplaces:task_status' task_id %}"
-         hx-indicator="#spinners"
+         hx-indicator="#spinner"
          hx-trigger="load, every 3s"
          hx-target="this"
              {#            hx-swap="outerHTML"#}
