@@ -2,10 +2,7 @@ from celery import current_app
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView
 from django.views.generic.edit import FormMixin
-from django.urls import (
-    reverse_lazy,
-    # reverse,
-)
+from django.urls import reverse_lazy
 from django_htmx.http import HttpResponseClientRefresh
 from django_htmx.middleware import HtmxDetails
 from django.http import (
@@ -19,7 +16,6 @@ from .models import Workplaces, Department, Staff
 from .forms import WorkplacesForm, DepartmentForm, StaffForm, SearchForm
 from .tasks import create_wp_task
 from celery.result import AsyncResult
-from macroemc_wmp.celery import app as celery_app
 from macroemc_wmp.utils import log
 from django.db.models import Q
 import time
@@ -77,44 +73,6 @@ class WorkplacesListView(FormMixin, ListView):
         log.info("Передаем в index.html task_id: %s", task_id)
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     form = self.get_form()
-    #     if form.is_valid():
-    #         workplace = form.save()
-    #         try:
-    #             task = create_wp_task.delay(workplace.id)
-    #         except Exception as e:
-    #             log.error("Не получили результата из Celery c ошибкой: %s", e)
-    #         res = AsyncResult(task, app=current_app)
-    #         request.session["task_id"] = task.id
-    #         request.session["wp_id"] = workplace.id
-    #         request.session["status"] = res.state
-    #         request.session["task_result"] = 1
-    #         context = {
-    #             "task_id": task.id,
-    #             "wp": workplace,
-    #             "wp_id": workplace.id,
-    #             "status": "Отправляем уведомления",
-    #             # "HX-Trigger": "create_run",
-    #         }
-    #         log.warning("Передаем в форму контекст %s", context)
-    #         response = render(
-    #             request,
-    #             self.template_name,
-    #             context,
-    #         )
-    #         # response["HX-Trigger"] = "create_run"
-    #         log.info("Выходим из FormValid")
-    #         return HttpResponseClientRefresh()
-    #         # return response
-    #         # html = render_to_string("workplaces/partials/wp_row.html", context)
-    #         # return JsonResponse({"html": html})
-    #     else:
-    #         html = render_to_string(
-    #             "workplaces/partials/wp_form.html", {"form": form}, request=request
-    #         )
-    #         return JsonResponse({"html": html}, status=400)
-
 
 class WorkplaceUpdateHTMXView(UpdateView):
     model = Workplaces
@@ -133,7 +91,6 @@ class WorkplaceUpdateHTMXView(UpdateView):
         row_html = render_to_string(
             "workplaces/partials/wp_row.html", context, request=self.request
         )
-        # return JsonResponse({"html": html})
         # HTML формы в режиме создания
         form_context = {"form": WorkplacesForm(), "is_update": False}
         form_html = render_to_string(
@@ -311,7 +268,7 @@ class WorkplaceCreateHTMXView(CreateView):
 @require_GET
 def task_status(request: HtmxHttpRequest, task_id) -> HttpResponse:
     """
-    Отображаем статусf отправки уведомлений сотрудникам отдела после создания рабочего места
+    Отображаем статус отправки уведомлений сотрудникам отдела после создания рабочего места
     """
     global count_status
     count_status += 1

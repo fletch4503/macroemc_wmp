@@ -29,7 +29,6 @@ class WorkplacesForm(forms.ModelForm):
                     "class": "form-control-wide",
                     "style": "width: 400px;",
                     "placeholder": "192.168.001.001",
-                    # "maxlength": 15,  # IPv4 max length
                     "pattern": r"^(\d{1,3}\.){3}\d{1,3}$",  # простая проверка паттерна (не строгая)
                 }
             ),
