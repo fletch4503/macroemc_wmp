@@ -1,5 +1,6 @@
+from celery import current_app
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, UpdateView, DeleteView
+from django.views.generic import ListView, UpdateView, DeleteView, CreateView
 from django.views.generic.edit import FormMixin
 from django.urls import (
     reverse_lazy,
@@ -55,52 +56,64 @@ class WorkplacesListView(FormMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(archived=False)
+        status = self.request.GET.get("status")
         query = self.request.GET.get("query")
         if query:
             queryset = queryset.filter(name__icontains=query)
+            log.info(
+                "Передаем в index.html статус: %s и набор длиной: %s",
+                status,
+                len(queryset),
+            )
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # self.request.session.pop("task_id", None)
+        task_id = self.request.session.get("task_id")
         context["form"] = self.get_form()
-        context["search_form"] = SearchForm(self.request.GET)
+        context["task_id"] = task_id
+        # context["search_form"] = SearchForm(self.request.GET)
+        log.info("Передаем в index.html task_id: %s", task_id)
         return context
 
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            workplace = form.save()
-            try:
-                task = create_wp_task.delay(workplace.id)
-            except Exception as e:
-                log.error("Не получили результата из Celery c ошибкой: %s", e)
-            res = AsyncResult(task, app=celery_app)
-            request.session["task_id"] = task.id
-            request.session["wp_id"] = workplace.id
-            request.session["status"] = res.state
-            request.session["task_result"] = 1
-            context = {
-                "task_id": task.id,
-                "wp": workplace,
-                "wp_id": workplace.id,
-                "status": "Отправляем уведомления",
-                "HX-Trigger": "create_run",
-            }
-            log.warning("Передаем в форму контекст %s", context)
-            response = render(
-                request,
-                self.template_name,
-                context,
-            )
-            log.info("Выходим из FormValid")
-            return HttpResponseClientRefresh()
-            # html = render_to_string("workplaces/partials/wp_row.html", context)
-            # return JsonResponse({"html": html})
-        else:
-            html = render_to_string(
-                "workplaces/partials/wp_form.html", {"form": form}, request=request
-            )
-            return JsonResponse({"html": html}, status=400)
+    # def post(self, request, *args, **kwargs):
+    #     form = self.get_form()
+    #     if form.is_valid():
+    #         workplace = form.save()
+    #         try:
+    #             task = create_wp_task.delay(workplace.id)
+    #         except Exception as e:
+    #             log.error("Не получили результата из Celery c ошибкой: %s", e)
+    #         res = AsyncResult(task, app=current_app)
+    #         request.session["task_id"] = task.id
+    #         request.session["wp_id"] = workplace.id
+    #         request.session["status"] = res.state
+    #         request.session["task_result"] = 1
+    #         context = {
+    #             "task_id": task.id,
+    #             "wp": workplace,
+    #             "wp_id": workplace.id,
+    #             "status": "Отправляем уведомления",
+    #             # "HX-Trigger": "create_run",
+    #         }
+    #         log.warning("Передаем в форму контекст %s", context)
+    #         response = render(
+    #             request,
+    #             self.template_name,
+    #             context,
+    #         )
+    #         # response["HX-Trigger"] = "create_run"
+    #         log.info("Выходим из FormValid")
+    #         return HttpResponseClientRefresh()
+    #         # return response
+    #         # html = render_to_string("workplaces/partials/wp_row.html", context)
+    #         # return JsonResponse({"html": html})
+    #     else:
+    #         html = render_to_string(
+    #             "workplaces/partials/wp_form.html", {"form": form}, request=request
+    #         )
+    #         return JsonResponse({"html": html}, status=400)
 
 
 class WorkplaceUpdateHTMXView(UpdateView):
@@ -248,6 +261,53 @@ class StaffListView(FormMixin, ListView):
                 "workplaces/partials/staff_form.html", {"form": form}, request=request
             )
             return JsonResponse({"html": html}, status=400)
+
+
+class WorkplaceCreateHTMXView(CreateView):
+    """
+    Создаем новое рабочее место
+    """
+
+    model = Workplaces
+    form_class = WorkplacesForm
+    template_name = "workplaces/partials/wp_row.html"
+    success_url = reverse_lazy("workplaces:list")
+
+    def form_valid(self, form):
+        self.request.session.pop("task_id", None)  # Сбрасываем задачу
+        response = super().form_valid(form)
+        context = self.get_context_data(form=form)
+        wp = self.object
+        wp_id = self.object.id
+        log.info(
+            "Form is valid, creating workplace: %s and context: %s", wp_id, context
+        )
+        try:
+            task = create_wp_task.delay(wp_id)
+        except Exception as e:
+            log.error("Не получили результата из Celery c ошибкой: %s", e)
+        res = AsyncResult(task.id, app=current_app)
+        self.request.session["task_id"] = task.id
+        self.request.session["wp_id"] = wp_id
+        self.request.session["wp"] = wp
+        self.request.session["status"] = res.state
+        self.request.session["task_result"] = 1
+        context = {
+            "task_id": task.id,
+            "wp": wp,
+            "wp_id": wp_id,
+            "status": "Отправляем уведомления",
+            # "HX-Trigger": "create_run",
+        }
+        log.warning("Передаем в форму контекст %s", context)
+        response = render(
+            self.request,
+            self.template_name,
+            context,
+        )
+        # response["HX-Trigger"] = "create_run"
+        log.info("Выходим из FormValid")
+        return HttpResponseClientRefresh()
 
 
 @counter

@@ -10,11 +10,15 @@ def create_wp_task(workplace_id: int = None):
     # Получаем список сотрудников данного отдела для рассылки
     staff_emails = Staff.objects.filter(department=wp.department)
     if staff_emails:
-        log.info("Получили в задачу создания рабочего места: %s список для рассылки: %s", workplace_id, staff_emails)
+        log.info(
+            "Получили в задачу создания рабочего места: %s список для рассылки: %s",
+            workplace_id,
+            staff_emails,
+        )
         for stemail in staff_emails:
             # Эмулируем отправку
             log.warning("Отправили письмо с оповещением на email: %s", stemail)
-            time.sleep(3)
+            time.sleep(1)
 
     return {
         "status": "SUCCESS",

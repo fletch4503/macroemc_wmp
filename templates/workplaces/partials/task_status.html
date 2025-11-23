@@ -8,11 +8,10 @@
          hx-indicator="#spinner"
          hx-trigger="load, every 3s"
          hx-target="this"
-             {#            hx-swap="outerHTML"#}
          hx-swap="innerHTML"
          {% endif %}
     >
-    >        {% if task_id %}
+        {% if task_id %}
             <span class="badge badge-info">{{ status }} по Рабочему Месту с ID:{{ wp_id }}</span>
             <span class="badge badge-warning">Шаг: {{ task_result }}</span>
         {% endif %}

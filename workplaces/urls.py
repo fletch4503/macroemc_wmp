@@ -5,6 +5,7 @@ app_name = "workplaces"
 
 urlpatterns = [
     path("", views.WorkplacesListView.as_view(), name="list"),
+    path("create/", views.WorkplaceCreateHTMXView.as_view(), name="create"),
     path("<int:pk>/update/", views.WorkplaceUpdateHTMXView.as_view(), name="update"),
     path("<int:pk>/delete/", views.WorkplaceDeleteHTMXView.as_view(), name="delete"),
     path("workplace-search", views.WorkplaceSearchHTMXView.as_view(), name="search"),

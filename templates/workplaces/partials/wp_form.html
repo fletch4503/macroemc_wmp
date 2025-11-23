@@ -10,7 +10,7 @@
         {% else %}
             <h3 class="card-title text-bold">Создать новое рабочее место</h3>
             <form class="form-control"
-                  hx-post="{% url 'workplaces:list' %}"
+                  hx-post="{% url 'workplaces:create' %}"
                   hx-indicator="#spinner"
                   hx-target="#task-status-container"
                   hx-swap="innerHTML"
