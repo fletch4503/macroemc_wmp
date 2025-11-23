@@ -14,6 +14,8 @@ from celery.result import AsyncResult
 from macroemc_wmp.utils import log
 from django.db.models import Q
 import time
+import json
+
 # import workplaces
 # from django.contrib import messages
 
@@ -50,7 +52,7 @@ class WorkplacesListView(FormMixin, ListView):
             return JsonResponse({"html": html})
         else:
             html = render_to_string(
-                "workplaces/partials/wp_form.html", {"form": form}
+                "workplaces/partials/wp_form.html", {"form": form}, request=request
             )
             return JsonResponse({"html": html}, status=400)
 
@@ -62,30 +64,38 @@ class WorkplaceUpdateHTMXView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_update'] = True
-        context['wp'] = self.object
+        context["is_update"] = True
+        context["wp"] = self.object
         return context
 
     def form_valid(self, form):
         form.save()
         context = {"wp": self.object}
-        row_html = render_to_string("workplaces/partials/wp_row.html", context)
+        row_html = render_to_string(
+            "workplaces/partials/wp_row.html", context, request=self.request
+        )
         # return JsonResponse({"html": html})
         # HTML формы в режиме создания
         form_context = {"form": WorkplacesForm(), "is_update": False}
-        form_html = render_to_string(self.template_name, form_context)
+        form_html = render_to_string(
+            self.template_name, form_context, request=self.request
+        )
         response = HttpResponse(form_html)
         # Триггер для замены строки
-        response["HX-Trigger"] = json.dumps({"replace-row": {"pk": self.object.pk, "html": row_html}})
+        response["HX-Trigger"] = json.dumps(
+            {"replace-row": {"pk": self.object.pk, "html": row_html}}
+        )
         return response
-
 
     def form_invalid(self, form):
         html = render_to_string(
-            self.template_name, {"form": form, "wp": self.object, "is_update": True}
+            self.template_name,
+            {"form": form, "wp": self.object, "is_update": True},
+            request=self.request,
         )
         # return JsonResponse({"html": html}, status=400)
         return HttpResponse(html, status=400)
+
 
 class WorkplaceDeleteHTMXView(DeleteView):
     model = Workplaces
@@ -109,17 +119,16 @@ class WorkplaceSearchHTMXView(ListView):
     def get(self, request, *args, **kwargs):
         time.sleep(1)
         # qs = super().get_queryset()
-        query=request.GET.get("search", default='')
-        log.warning("Ищем строку: %s",query)
+        query = request.GET.get("search", default="")
+        log.warning("Ищем строку: %s", query)
         wp = Workplaces.objects.filter(
             Q(name__icontains=query)
             | Q(description__icontains=query)
             | Q(department__name__icontains=query)
             | Q(department__staff__last_name__icontains=query)
         )
-        return render(
-            request, "workplaces/wp_list.html",{"workplaces": wp}
-        )
+        return render(request, "workplaces/wp_list.html", {"workplaces": wp})
+
 
 class DepartmentListView(FormMixin, ListView):
     model = Department
@@ -151,7 +160,9 @@ class DepartmentListView(FormMixin, ListView):
             return JsonResponse({"html": html})
         else:
             html = render_to_string(
-                "workplaces/partials/department_form.html", {"form": form}
+                "workplaces/partials/department_form.html",
+                {"form": form},
+                request=request,
             )
             return JsonResponse({"html": html}, status=400)
 
@@ -187,7 +198,7 @@ class StaffListView(FormMixin, ListView):
             return JsonResponse({"html": html})
         else:
             html = render_to_string(
-                "workplaces/partials/staff_form.html", {"form": form}
+                "workplaces/partials/staff_form.html", {"form": form}, request=request
             )
             return JsonResponse({"html": html}, status=400)
 

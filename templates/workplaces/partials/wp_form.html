@@ -32,11 +32,11 @@
                     <label class="label">Описание Рабочего Места:</label>
                     {{ form.description }}
                 </div>
-                <div id="ip-field" class="{% if not is_update or workplace.type != 'pcplace' %}hidden{% endif %}">
+                <div id="ip-field" class="{% if not is_update or wp.type != 'pcplace' %}hidden{% endif %}">
                     <label class="label">IP</label>
                     {{ form.ip }}
                 </div>
-                <div id="mac-field" class="{% if not is_update or workplace.type != 'pcplace' %}hidden{% endif %}">
+                <div id="mac-field" class="{% if not is_update or wp.type != 'pcplace' %}hidden{% endif %}">
                     <label class="label">MAC</label>
                     {{ form.mac }}
                 </div>

@@ -29,17 +29,35 @@
 {% endpartialdef wp-list %}
 </div>
 <script>
-    // JS для показа/скрытия ip/mac
-    document.getElementById('id_type').addEventListener('change', function() {
-        const type = this.value;
+    // JS для показа/скрытия ip/mac — делегирование и поддержка динамической подгрузки через HTMX
+    function toggleIpMac(type) {
         const ipField = document.getElementById('ip-field');
         const macField = document.getElementById('mac-field');
+        if (!ipField || !macField) return;
         if (type === 'pcplace') {
             ipField.classList.remove('hidden');
             macField.classList.remove('hidden');
         } else {
             ipField.classList.add('hidden');
             macField.classList.add('hidden');
+        }
+    }
+
+    // Делегируем событие change для select с id 'id_type' — сработает и для динамически подгружаемых форм
+    document.body.addEventListener('change', function(event) {
+        const target = event.target;
+        if (target && target.id === 'id_type') {
+            toggleIpMac(target.value);
+        }
+    });
+
+    // При подстановке содержимого HTMX (после swap) проверяем, нужно ли показать поля
+    document.body.addEventListener('htmx:afterSwap', function(event){
+        // event.detail.target — элемент, в который HTMX подставил содержимое
+        const tgt = event.detail && event.detail.target ? event.detail.target : null;
+        if (tgt && tgt.id === 'wp_form') {
+            const select = document.getElementById('id_type');
+            if (select) toggleIpMac(select.value);
         }
     });
 
