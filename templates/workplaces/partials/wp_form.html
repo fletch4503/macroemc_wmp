@@ -12,8 +12,7 @@
             <form class="form-control"
                   hx-post="{% url 'workplaces:list' %}"
                   hx-indicator="#spinner"
-                    {#                  hx-target="#workplaces-table tbody"#}
-                    {#                  hx-swap="beforeend"#}
+                  hx-target="#task-status-container"
                   hx-swap="innerHTML"
             >
         {% endif %}

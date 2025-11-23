@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin
 from django.urls import (
-    # reverse_lazy,
-    reverse,
+    reverse_lazy,
+    # reverse,
 )
 from django_htmx.http import HttpResponseClientRefresh
 from django_htmx.middleware import HtmxDetails
@@ -49,11 +49,12 @@ class WorkplacesListView(FormMixin, ListView):
     template_name = "workplaces/index.html"
     context_object_name = "workplaces"
     form_class = WorkplacesForm
+    success_url = reverse_lazy("workplaces:list")
     ordering = ["-id"]
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().filter(archived=False)
         query = self.request.GET.get("query")
         if query:
             queryset = queryset.filter(name__icontains=query)
@@ -81,6 +82,7 @@ class WorkplacesListView(FormMixin, ListView):
             context = {
                 "task_id": task.id,
                 "wp": workplace,
+                "wp_id": workplace.id,
                 "status": "Отправляем уведомления",
                 "HX-Trigger": "create_run",
             }
@@ -169,7 +171,8 @@ class WorkplaceSearchHTMXView(ListView):
             Q(name__icontains=query)
             | Q(description__icontains=query)
             | Q(department__name__icontains=query)
-            | Q(department__staff__last_name__icontains=query)
+            | Q(department__staff__last_name__icontains=query),
+            archived=False,
         )
         return render(request, "workplaces/wp_list.html", {"workplaces": wp})
 

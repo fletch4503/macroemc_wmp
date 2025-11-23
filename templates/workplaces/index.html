@@ -12,8 +12,7 @@
         {% include 'workplaces/partials/wp_form.html' %}
     </div>
     <!-- Статус задачи -->
-    <div class="hidden mt-2">
-        {% if task_id %}{% include 'workplaces/partials/task_status.html' %}{% endif %}
+    <div class="mt-2" id="task-status-container" hx-target="this" hx-swap="innerHTML">
     </div>
     <!-- Поиск -->
     {% include 'workplaces/partials/wp_search.html' %}
