@@ -118,9 +118,11 @@ docker-compose up --build -d
 ```
 
 3. При первом запуске примените миграции:
+
    ```bash
    docker-compose exec web uv run python manage.py migrate
    ```
+
 4. Создайте суперпользователя:
 
 ```bash
