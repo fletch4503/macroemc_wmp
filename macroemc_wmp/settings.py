@@ -152,7 +152,7 @@ CELERY_RESULT_BACKEND = "django-db"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 # Logging Configuration
-import colorlog
+import colorlog  # noqa: E402
 
 LOGGING = {
     "version": 1,
