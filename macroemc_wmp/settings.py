@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 PROJECT_APPS = [
     "workplaces",
-    "frontend",
+    # "frontend",
 ]
 
 EXT_APPS = [
