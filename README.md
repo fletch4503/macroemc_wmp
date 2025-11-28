@@ -38,16 +38,16 @@
 
 1. Клонируйте репозиторий:
 
-```bash
-git clone https://github.com/fletch4503/macroemc_wmp.git
-cd macrogroup
-```
+   ```bash
+   git clone https://github.com/fletch4503/macroemc_wmp.git
+   cd macrogroup
+   ```
 
 2. Установите UV (если не установлен):
 
-```bash
-pip install uv
-```
+   ```bash
+   pip install uv
+   ```
 
 3. Синхронизируйте зависимости:
 
@@ -57,65 +57,65 @@ pip install uv
 
 4. Активируйте виртуальное окружение (опционально, если вы планируете запускать команды вручную):
 
-    - На Windows:
+   - На Windows:
 
-      ```bash
-      .venv\Scripts\activate
-      ```
+   ```bash
+   .venv\Scripts\activate
+   ```
 
-    - На macOS/Linux:
+   - На macOS/Linux:
 
-      ```bash
-      source .venv/bin/activate
-      ```
+   ```bash
+   source .venv/bin/activate
+   ```
 
 5. Настройте переменные окружения (создайте `.env`):
 
-```bash
-DJANGO_SETTINGS_MODULE=macroemc_wmp.settings
-DEBUG=True
-SECRET_KEY=your-secret-key-here
-DB_ENGINE=django.db.backends.postgresql
-DB_NAME=macrogroup
-DB_USER=postgres
-DB_PASSWORD=password
-DB_HOST=localhost
-DB_PORT=5432
-REDIS_URL=redis://localhost:6379/0
-```
+   ```bash
+   DJANGO_SETTINGS_MODULE=macroemc_wmp.settings
+   DEBUG=True
+   SECRET_KEY=your-secret-key-here
+   DB_ENGINE=django.db.backends.postgresql
+   DB_NAME=macrogroup
+   DB_USER=postgres
+   DB_PASSWORD=password
+   DB_HOST=localhost
+   DB_PORT=5432
+   REDIS_URL=redis://localhost:6379/0
+   ```
 
 6. Примените миграции:
 
-```bash
-uv run python manage.py migrate
-```
+   ```bash
+   uv run python manage.py migrate
+   ```
 
 7. Создайте суперпользователя:
 
-```bash
-uv run python manage.py createsuperuser
-```
+   ```bash
+   uv run python manage.py createsuperuser
+   ```
 
 8. Заполните БД тестовыми данными (опционально):
 
-```bash
-uv run python manage.py populate_db
-```
+   ```bash
+   uv run python manage.py populate_db
+   ```
 
 ### Вариант 2: Docker Compose (рекомендуется)
 
 1. Клонируйте репозиторий:
 
-```bash
-git clone https://github.com/fletch4503/macroemc_wmp.git
-cd macrogroup
-```
+   ```bash
+   git clone https://github.com/fletch4503/macroemc_wmp.git
+   cd macrogroup
+   ```
 
 2. Запустите контейнеры:
 
-```bash
-docker-compose up --build -d
-```
+   ```bash
+   docker-compose up --build -d
+   ```
 
 3. При первом запуске примените миграции:
 
@@ -125,17 +125,17 @@ docker-compose up --build -d
 
 4. Создайте суперпользователя:
 
-```bash
-docker-compose exec web uv run python manage.py createsuperuser
-```
+   ```bash
+   docker-compose exec web uv run python manage.py createsuperuser
+   ```
 
 5. Заполните БД тестовыми данными:
 
-```bash
-docker-compose exec web uv run python manage.py populate_db
-```
+   ```bash
+   docker-compose exec web uv run python manage.py populate_db
+   ```
 
-Приложение будет доступно по адресу: http://localhost:8000
+   Приложение будет доступно по адресу: <http://localhost:8000>
 
 ## Использование
 
@@ -194,7 +194,7 @@ docker-compose exec web uv run python manage.py populate_db
 
 ## Структура проекта
 
-```
+``` text
 macrogroup/
 ├── macroemc_wmp/                # Конфигурация Django проекта
 │   ├── settings.py              # Основные настройки
@@ -244,7 +244,7 @@ macrogroup/
 
 ### Workplaces
 
-```
+``` text
 - name: CharField  # Название рабочего места
 - description: TextField  # Описание
 - type: CharField  # Тип: "pcplace" или "nopcplace"
@@ -256,7 +256,7 @@ macrogroup/
 
 ### Department
 
-```
+``` text
     - name: CharField  # Название отдела
     - description: TextField  # Описание
     - archived: BooleanField  # Флаг мягкого удаления
@@ -264,7 +264,7 @@ macrogroup/
 
 ### Staff
 
-```
+``` text
 - first_name: CharField  # Имя
 - last_name: CharField  # Фамилия
 - department: ForeignKey  # Связь на отдел
@@ -361,24 +361,26 @@ docker-compose up --build -d
 
 1. **Используйте Gunicorn + Nginx**:
 
-```bash
-uv run pip install gunicorn
-docker-compose build
-docker-compose up -d
-```
+   ```bash
+   uv run pip install gunicorn
+   docker-compose build
+   docker-compose up -d
+   ```
 
 2. **Настройте переменные окружения**:
-    - Установите `DEBUG=False`
-    - Генерируйте `SECRET_KEY` с помощью `python manage.py shell`
-    - Используйте надежные пароли для БД
+
+   - Установите `DEBUG=False`
+   - Генерируйте `SECRET_KEY` с помощью `python manage.py shell`
+   - Используйте надежные пароли для БД
 
 3. **Используйте PostgreSQL** в production (уже в docker-compose)
 
 4. **Включите HTTPS** через Nginx или облачный прокси
 
 5. **Мониторьте Celery**:
-    - Используйте Flower для мониторинга задач
-    - Настройте логирование и alerting
+
+   - Используйте Flower для мониторинга задач
+   - Настройте логирование и alerting
 
 ## Решение проблем
 

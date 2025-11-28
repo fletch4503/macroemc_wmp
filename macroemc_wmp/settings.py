@@ -36,10 +36,12 @@ PROJECT_APPS = [
 
 EXT_APPS = [
     "celery",
+    "corsheaders",
     "django_browser_reload",
     "django_celery_results",
     "django_htmx",
     "template_partials",
+    "rest_framework",
 ]
 
 INSTALLED_APPS = (
@@ -58,6 +60,7 @@ INSTALLED_APPS = (
 EXTRA_MIDDLEWARE = [
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "coresheaders.middleware.CorsMiddleware",
 ]
 
 MIDDLEWARE = [
@@ -69,6 +72,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ] + EXTRA_MIDDLEWARE
+
+
+REST_FRAMEWORK = {"DEFAULT_PERMISSION_CLASSES": ["rest_framework.permission.AllowAny"]}
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = "macroemc_wmp.urls"
 

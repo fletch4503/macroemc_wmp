@@ -12,5 +12,6 @@ urlpatterns = [
     path("task-status/<str:task_id>/", views.task_status, name="task_status"),
     # Отслеживаем статус задачи отправки уведомлений
     path("department/", views.DepartmentListView.as_view(), name="department_list"),
+    path("dptreactview/", views.DepartmentReactView.as_view(), name="dpt_react_list"),
     path("staff/", views.StaffListView.as_view(), name="staff_list"),
 ]

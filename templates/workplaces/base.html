@@ -1,5 +1,5 @@
 {% load static %}
-{% load partials %}
+{#{% load partials %}#}
 <!DOCTYPE html>
 <html lang="ru" data-theme="light">
 <head>
@@ -9,7 +9,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- DaisyUI -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css"/>
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@2.0.1"></script>
     <script src="https://unpkg.com/htmx.org@2.0.1/dist/ext/ws.js"></script>
@@ -23,12 +23,12 @@
 </head>
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
       class="bg-base-200">
-    <!-- Navbar -->
-    {% include 'workplaces/partials/navpanel.html' %}
-    <!-- Main Content -->
-    <div class="container mx-auto p-2">
-        {% block content %}{% endblock %}
-    </div>
-    <script src="{% static 'js/base.js' %}"></script>
+<!-- Navbar -->
+{% include 'workplaces/partials/navpanel.html' %}
+<!-- Main Content -->
+<div class="container mx-auto p-2">
+    {% block content %}{% endblock %}
+</div>
+<script src="{% static 'js/base.js' %}"></script>
 </body>
 </html>

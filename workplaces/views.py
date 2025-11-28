@@ -1,4 +1,5 @@
 from celery import current_app
+from celery.result import AsyncResult
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView
 from django.views.generic.edit import FormMixin
@@ -12,12 +13,14 @@ from django.http import (
 )
 from django.views.decorators.http import require_GET
 from django.template.loader import render_to_string
+from django.db.models import Q
 from .models import Workplaces, Department, Staff
 from .forms import WorkplacesForm, DepartmentForm, StaffForm, SearchForm
 from .tasks import create_wp_task
-from celery.result import AsyncResult
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializer import DepartmentSerializer
 from macroemc_wmp.utils import log
-from django.db.models import Q
 import time
 import json
 
@@ -70,7 +73,7 @@ class WorkplacesListView(FormMixin, ListView):
         context["form"] = self.get_form()
         context["task_id"] = task_id
         # context["search_form"] = SearchForm(self.request.GET)
-        log.info("Передаем в index.html task_id: %s", task_id)
+        log.warning("Передаем в index.html task_id: %s", task_id)
         return context
 
 
@@ -145,6 +148,25 @@ class WorkplaceSearchHTMXView(ListView):
             archived=False,
         )
         return render(request, "workplaces/wp_list.html", {"workplaces": wp})
+
+
+class DepartmentReactView(APIView):
+    def get(self, request):
+        output = [
+            {
+                "name": output.name,
+                "description": output.description,
+                "archived": output.archived,
+            }
+            for output in Department.objects.all()
+        ]
+        return Response(output)
+
+    def post(self, request):
+        serializer = DepartmentSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
 
 
 class DepartmentListView(FormMixin, ListView):
