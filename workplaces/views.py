@@ -18,7 +18,8 @@ from .models import Workplaces, Department, Staff
 from .forms import WorkplacesForm, DepartmentForm, StaffForm, SearchForm
 from .tasks import create_wp_task
 from rest_framework.views import APIView
-from rest_framework.response import Response
+
+# from rest_framework.response import Response
 from .serializer import DepartmentSerializer
 from macroemc_wmp.utils import log
 import time
@@ -151,22 +152,10 @@ class WorkplaceSearchHTMXView(ListView):
 
 
 class DepartmentReactView(APIView):
-    def get(self, request):
-        output = [
-            {
-                "name": output.name,
-                "description": output.description,
-                "archived": output.archived,
-            }
-            for output in Department.objects.all()
-        ]
-        return Response(output)
+    serializer_class = DepartmentSerializer
 
-    def post(self, request):
-        serializer = DepartmentSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
+    def get_object(self) -> Department:
+        return Department.objects.all()[0]
 
 
 class DepartmentListView(FormMixin, ListView):
